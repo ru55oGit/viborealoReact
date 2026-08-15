@@ -52,6 +52,17 @@ export default function Game() {
   const langRef = useRef(currentLanguage);
   langRef.current = currentLanguage;
 
+  // Referencia siempre actualizada al estado del juego, para leerla desde
+  // el loop del tick sin pasar por la forma funcional de setGameState. Esa
+  // forma (prev => ...) se invoca dos veces por render en StrictMode, y acá
+  // stepSnake no es pura (sortea letras nuevas) ni inocua (tenía setState
+  // anidados adentro) — invocarla dos veces duplicaba pasos y producía
+  // "comidas fantasma" (una letra distinta a la que realmente se tocó).
+  const gameStateRef = useRef(gameState);
+  useEffect(() => {
+    gameStateRef.current = gameState;
+  }, [gameState]);
+
   useEffect(() => {
     recordLastPlayed();
   }, []);
@@ -61,16 +72,15 @@ export default function Game() {
   useEffect(() => {
     if (phase !== "playing") return;
     const interval = setInterval(() => {
-      setGameState((prev) => {
-        const dir = pendingDirectionRef.current;
-        setDirection(dir);
-        const result = stepSnake(prev, dir, langRef.current);
-        if (result.status === "gameover") {
-          setPhase("gameover");
-          return prev;
-        }
-        return result.state;
-      });
+      const dir = pendingDirectionRef.current;
+      const result = stepSnake(gameStateRef.current, dir, langRef.current);
+      if (result.status === "gameover") {
+        setPhase("gameover");
+        return;
+      }
+      setDirection(dir);
+      gameStateRef.current = result.state;
+      setGameState(result.state);
     }, tickIntervalMs(gameState.letters.length));
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
