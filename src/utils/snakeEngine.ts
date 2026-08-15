@@ -5,8 +5,8 @@ export const GRID_COLS = 12;
 export const GRID_ROWS = 16;
 export const MAX_LETTERS_ON_BOARD = 6;
 export const INITIAL_SNAKE_LENGTH = 3;
-export const BASE_TICK_MS = 260;
-export const MIN_TICK_MS = 130;
+export const BASE_TICK_MS = 520;
+export const MIN_TICK_MS = 260;
 const MAX_PATH_LENGTH = 2000; // más que de sobra: el largo máximo real está acotado por GRID_COLS*GRID_ROWS
 
 export type Direction = "up" | "down" | "left" | "right";
