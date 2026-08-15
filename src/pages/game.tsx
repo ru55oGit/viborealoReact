@@ -228,20 +228,18 @@ export default function Game() {
           {t.detectWordButton}
         </Button>
 
-        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "4px", width: "70%", mx: "auto", mb: 2 }}>
-          <Box />
-          <Button disabled={upDisabled} onClick={() => handleDirectionInput("up")} sx={dpadButtonSx}>
-            <ArrowUpwardRoundedIcon sx={{ fontSize: 26 }} />
-          </Button>
-          <Box />
+        <Box sx={{ display: "flex", width: "100%", gap: "2px", mb: 2 }}>
           <Button disabled={leftDisabled} onClick={() => handleDirectionInput("left")} sx={dpadButtonSx}>
-            <ArrowBackRoundedIcon sx={{ fontSize: 26 }} />
+            <ArrowBackRoundedIcon sx={{ fontSize: 24 }} />
+          </Button>
+          <Button disabled={upDisabled} onClick={() => handleDirectionInput("up")} sx={dpadButtonSx}>
+            <ArrowUpwardRoundedIcon sx={{ fontSize: 24 }} />
           </Button>
           <Button disabled={downDisabled} onClick={() => handleDirectionInput("down")} sx={dpadButtonSx}>
-            <ArrowDownwardRoundedIcon sx={{ fontSize: 26 }} />
+            <ArrowDownwardRoundedIcon sx={{ fontSize: 24 }} />
           </Button>
           <Button disabled={rightDisabled} onClick={() => handleDirectionInput("right")} sx={dpadButtonSx}>
-            <ArrowForwardRoundedIcon sx={{ fontSize: 26 }} />
+            <ArrowForwardRoundedIcon sx={{ fontSize: 24 }} />
           </Button>
         </Box>
 
@@ -258,6 +256,7 @@ export default function Game() {
 }
 
 const dpadButtonSx = {
+  flex: 1,
   aspectRatio: "1 / 1",
   minWidth: 0,
   padding: 0,
