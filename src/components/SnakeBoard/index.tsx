@@ -17,6 +17,23 @@ const FLASH_BG = "#2ecc71";
 
 const SWIPE_THRESHOLD_PX = 22;
 
+// Dos ojitos arriba de la letra en la celda de la cabeza, para que se
+// distinga de un vistazo del resto del cuerpo (la celda es muy chica para
+// una carita completa, así que la letra sigue siendo lo principal).
+function eyeSx(left: string) {
+  return {
+    position: "absolute" as const,
+    top: "14%",
+    left,
+    transform: "translateX(-50%)",
+    width: "16%",
+    height: "16%",
+    borderRadius: "50%",
+    backgroundColor: "#fff",
+    border: "1px solid rgba(0,0,0,0.35)",
+  };
+}
+
 interface SnakeBoardProps {
   segments: SnakeSegment[];
   letterTiles: LetterTile[];
@@ -74,12 +91,13 @@ export default function SnakeBoard({ segments, letterTiles, flashIndices, onSwip
       let color = "#bbb";
       let letter = "";
       let borderRadius = "3px";
+      const isHead = seg?.isHead ?? false;
 
       if (seg) {
-        backgroundColor = seg.flash ? FLASH_BG : seg.isHead ? HEAD_BG : BODY_BG;
+        backgroundColor = seg.flash ? FLASH_BG : isHead ? HEAD_BG : BODY_BG;
         color = "#fff";
         letter = seg.letter;
-        borderRadius = seg.isHead ? "6px" : "3px";
+        borderRadius = isHead ? "45% 45% 55% 55% / 60% 60% 40% 40%" : "3px";
       } else if (tileLetter) {
         backgroundColor = TILE_BG;
         color = ACCENT;
@@ -90,6 +108,7 @@ export default function SnakeBoard({ segments, letterTiles, flashIndices, onSwip
         <Box
           key={k}
           sx={{
+            position: "relative",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -101,8 +120,15 @@ export default function SnakeBoard({ segments, letterTiles, flashIndices, onSwip
             color,
             border: tileLetter ? `1px solid ${ACCENT}55` : "none",
             transition: "background-color 0.12s, color 0.12s",
+            paddingTop: isHead ? "22%" : 0,
           }}
         >
+          {isHead && (
+            <>
+              <Box sx={eyeSx("22%")} />
+              <Box sx={eyeSx("68%")} />
+            </>
+          )}
           {letter}
         </Box>
       );

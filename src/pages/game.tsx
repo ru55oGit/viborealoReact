@@ -113,7 +113,7 @@ export default function Game() {
 
     if (clearTimeoutRef.current) clearTimeout(clearTimeoutRef.current);
     clearTimeoutRef.current = setTimeout(() => {
-      setGameState((prev) => removeWordFromState(prev, match));
+      setGameState((prev) => removeWordFromState(prev, match, currentLanguage));
       setFlashIndices(null);
     }, CLEAR_DELAY_MS);
   }

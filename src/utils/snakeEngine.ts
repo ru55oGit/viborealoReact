@@ -215,10 +215,14 @@ export function pointsForWord(word: string): number {
   return 10 + lengthBonus;
 }
 
-export function removeWordFromState(state: SnakeGameState, match: WordMatch): SnakeGameState {
+export function removeWordFromState(state: SnakeGameState, match: WordMatch, lang: SupportedLanguage): SnakeGameState {
   const letters = [
     ...state.letters.slice(0, match.startIndex),
     ...state.letters.slice(match.startIndex + match.length),
   ];
+  // Si la palabra detectada usaba TODO el cuerpo, no podemos dejar la
+  // víbora en largo 0 (rompería el juego: no habría cabeza). Sigue con una
+  // letra nueva en la misma posición, como si arrancara de nuevo ahí mismo.
+  if (letters.length === 0) letters.push(randomLetter(lang));
   return { ...state, letters };
 }
