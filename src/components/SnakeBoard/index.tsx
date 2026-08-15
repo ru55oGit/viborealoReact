@@ -17,17 +17,16 @@ const FLASH_BG = "#2ecc71";
 
 const SWIPE_THRESHOLD_PX = 22;
 
-// Dos ojitos arriba de la letra en la celda de la cabeza, para que se
-// distinga de un vistazo del resto del cuerpo (la celda es muy chica para
-// una carita completa, así que la letra sigue siendo lo principal).
+// La cabeza no muestra letra (es solo la cara de la víbora); los ojos son
+// lo único que se dibuja adentro.
 function eyeSx(left: string) {
   return {
     position: "absolute" as const,
-    top: "14%",
+    top: "38%",
     left,
-    transform: "translateX(-50%)",
-    width: "16%",
-    height: "16%",
+    transform: "translate(-50%, -50%)",
+    width: "26%",
+    height: "26%",
     borderRadius: "50%",
     backgroundColor: "#fff",
     border: "1px solid rgba(0,0,0,0.35)",
@@ -96,7 +95,7 @@ export default function SnakeBoard({ segments, letterTiles, flashIndices, onSwip
       if (seg) {
         backgroundColor = seg.flash ? FLASH_BG : isHead ? HEAD_BG : BODY_BG;
         color = "#fff";
-        letter = seg.letter;
+        letter = isHead ? "" : seg.letter;
         borderRadius = isHead ? "45% 45% 55% 55% / 60% 60% 40% 40%" : "3px";
       } else if (tileLetter) {
         backgroundColor = TILE_BG;
@@ -120,7 +119,6 @@ export default function SnakeBoard({ segments, letterTiles, flashIndices, onSwip
             color,
             border: tileLetter ? `1px solid ${ACCENT}55` : "none",
             transition: "background-color 0.12s, color 0.12s",
-            paddingTop: isHead ? "22%" : 0,
           }}
         >
           {isHead && (
