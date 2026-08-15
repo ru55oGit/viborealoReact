@@ -1,0 +1,18 @@
+# Changelog
+
+Todos los cambios notables de este proyecto se documentan en este archivo.
+
+El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
+
+## [Unreleased]
+### Added
+- Viborealo: primera versión. Viborita clásica (tablero 12x16) donde en vez de puntitos se comen letras que van apareciendo random (ponderadas por frecuencia para que sea viable formar palabras); cada letra comida se suma al cuerpo, en el orden en que se comió
+- Botón "Detectar palabra": busca la substring válida más larga (según el mismo diccionario de Letris) en el cuerpo, la elimina (el cuerpo se achica y se reconecta solo) y suma puntos. Si hay varias posibles, gana la más larga
+- Controles: botonera tipo D-pad, swipe sobre el tablero, y flechas del teclado en desktop. El botón que revertiría la dirección actual (posición actual + su opuesto = choque instantáneo) queda deshabilitado
+- Pierde si choca contra el borde del tablero o contra su propio cuerpo
+- Reutilizado de Letris: validador de diccionario (ES/EN/PT + nombres y palabras extra), Layout, selector de idioma, sistema de récord (mejor puntaje, más palabras en una partida, palabra más larga histórica)
+- Home con botón de volver al hub "Dejá de Boludear" cuando se llega con `?from=boludeando`
+
+### Pending
+- Todavía no tiene dominio propio ni cuenta de AdSense: falta agregar el script de AdSense, `ads.txt` y `sitemap.xml` cuando el juego esté listo para producción
+- No se testeó el estado inicial de git ni se pusheó a GitHub (repo local únicamente por ahora)
