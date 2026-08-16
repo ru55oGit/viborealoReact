@@ -168,6 +168,21 @@ export default function Game() {
     return (
       <Layout onBack={() => navigate("/")}>
         <Box sx={{ width: "100%", px: { xs: 1.5, md: 2 }, pb: 2, display: "flex", flexDirection: "column", gap: 2 }}>
+          <Box sx={{ borderRadius: "16px", backgroundColor: "#f3f3f3", p: 3, display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
+            <Typography sx={{ fontSize: 52 }}>🐍</Typography>
+            <Typography sx={{ fontFamily: "Lobster, cursive", fontSize: 26, color: "#222", textAlign: "center" }}>
+              {t.gameOverTitle}
+            </Typography>
+            <Typography sx={{ color: "#666", fontSize: 16 }}>{t.gameOverBody(score)}</Typography>
+          </Box>
+
+          <Box sx={{ borderRadius: "16px", backgroundColor: "#fff", p: 2, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
+            <Typography sx={{ fontSize: 18, fontWeight: 800, color: "#222", mb: 1 }}>
+              {t.wordsListTitle} ({foundWords.length})
+            </Typography>
+            <FoundWordsList title={t.wordsListTitle} emptyLabel={t.wordsListEmpty} words={foundWords} hideTitle />
+          </Box>
+
           <Button onClick={restartGame} variant="contained" size="large" sx={{
             backgroundColor: "#fff", color: ACCENT, fontWeight: 800, fontSize: 18,
             py: 1.6, borderRadius: 999, textTransform: "none",
@@ -178,18 +193,6 @@ export default function Game() {
           <Button onClick={() => navigate("/")} sx={{ color: "#fff", fontSize: 14, fontWeight: 700 }}>
             {t.backToHomeButton}
           </Button>
-
-          <Box sx={{ borderRadius: "16px", backgroundColor: "#f3f3f3", p: 3, display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
-            <Typography sx={{ fontSize: 52 }}>🐍</Typography>
-            <Typography sx={{ fontFamily: "Lobster, cursive", fontSize: 26, color: "#222", textAlign: "center" }}>
-              {t.gameOverTitle}
-            </Typography>
-            <Typography sx={{ color: "#666", fontSize: 16 }}>{t.gameOverBody(score)}</Typography>
-          </Box>
-
-          <Box sx={{ borderRadius: "16px", backgroundColor: "#fff", p: 2, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
-            <FoundWordsList title={t.wordsListTitle} emptyLabel={t.wordsListEmpty} words={foundWords} />
-          </Box>
         </Box>
       </Layout>
     );

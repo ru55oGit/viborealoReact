@@ -5,6 +5,9 @@ Todos los cambios notables de este proyecto se documentan en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 ## [Unreleased]
+### Changed
+- Game over: mover los botones "Jugar de nuevo"/"Volver al inicio" debajo del box de palabras encontradas, y sacar el título "Palabras formadas" afuera del box gris (mismo estilo que Letris)
+
 ### Added
 - Viborealo: primera versión. Viborita clásica (tablero 12x16) donde en vez de puntitos se comen letras que van apareciendo random (ponderadas por frecuencia para que sea viable formar palabras); cada letra comida se suma al cuerpo, en el orden en que se comió
 - Botón "Detectar palabra": busca la substring válida más larga (según el mismo diccionario de Letris) en el cuerpo, la elimina (el cuerpo se achica y se reconecta solo) y suma puntos. Si hay varias posibles, gana la más larga

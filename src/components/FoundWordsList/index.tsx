@@ -9,34 +9,37 @@ export interface FoundWordEntry {
 }
 
 interface FoundWordsListProps {
-  title: string;
+  title?: string;
   emptyLabel: string;
   words: FoundWordEntry[];
   scoreLabel?: string;
   score?: number;
+  hideTitle?: boolean; // el título ya se muestra afuera del box gris (ver pantalla de game over)
 }
 
-export default function FoundWordsList({ title, emptyLabel, words, scoreLabel, score }: FoundWordsListProps) {
+export default function FoundWordsList({ title, emptyLabel, words, scoreLabel, score, hideTitle }: FoundWordsListProps) {
   return (
     <Box sx={{
       width: "100%", borderRadius: "12px", backgroundColor: "#f3f3f3",
       p: 1.5, minHeight: 88, display: "flex", flexDirection: "column", gap: 0.75,
     }}>
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <Typography sx={{ fontSize: 11, color: "#888", fontWeight: 700, textTransform: "uppercase" }}>
-          {title} ({words.length})
-        </Typography>
-        {score !== undefined && (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-            <Typography sx={{ fontSize: 11, color: "#888", fontWeight: 700, textTransform: "uppercase" }}>
-              {scoreLabel}
-            </Typography>
-            <Typography sx={{ color: ACCENT, fontWeight: 900, fontSize: 16, fontFamily: "monospace" }}>
-              {score}
-            </Typography>
-          </Box>
-        )}
-      </Box>
+      {!hideTitle && (
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Typography sx={{ fontSize: 11, color: "#888", fontWeight: 700, textTransform: "uppercase" }}>
+            {title} ({words.length})
+          </Typography>
+          {score !== undefined && (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              <Typography sx={{ fontSize: 11, color: "#888", fontWeight: 700, textTransform: "uppercase" }}>
+                {scoreLabel}
+              </Typography>
+              <Typography sx={{ color: ACCENT, fontWeight: 900, fontSize: 16, fontFamily: "monospace" }}>
+                {score}
+              </Typography>
+            </Box>
+          )}
+        </Box>
+      )}
       {words.length === 0 ? (
         <Box sx={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <Typography sx={{ fontSize: 13, color: "#aaa", textAlign: "center" }}>{emptyLabel}</Typography>
