@@ -7,6 +7,7 @@ import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import Layout from "../components/Layout";
 import LanguageSelector from "../components/LanguageSelector";
+import SnakeDemo from "../components/SnakeDemo";
 import { useLanguage } from "../i18n/LanguageContext";
 import { getRecord, ViborealoRecord } from "../utils/viborealoRecordState";
 import { getDaysSinceLastPlayed } from "../utils/lastPlayedState";
@@ -14,38 +15,6 @@ import { getDaysSinceLastPlayed } from "../utils/lastPlayedState";
 const ACCENT = "#e74c3c";
 const CARD_BG = "#eb6f62";
 const HUB_URL = "https://dejadeboludear.netlify.app/";
-
-// Preview estática: unos segmentos de víbora comiendo una letra, para dar
-// una idea visual del juego sin correr el motor real.
-const PREVIEW_ROW: { letter: string; kind: "empty" | "body" | "head" | "tile" }[] = [
-  { letter: "", kind: "empty" },
-  { letter: "S", kind: "body" },
-  { letter: "O", kind: "body" },
-  { letter: "L", kind: "head" },
-  { letter: "", kind: "empty" },
-  { letter: "A", kind: "tile" },
-];
-
-function PreviewStrip() {
-  return (
-    <Box sx={{ display: "flex", gap: 0.75, justifyContent: "center" }}>
-      {PREVIEW_ROW.map((cell, i) => {
-        const bg = cell.kind === "head" ? "#c0392b" : cell.kind === "body" ? ACCENT : cell.kind === "tile" ? "#fdebea" : "#f0f0f0";
-        const color = cell.kind === "tile" ? ACCENT : cell.kind === "empty" ? "transparent" : "#fff";
-        return (
-          <Box key={i} sx={{
-            width: 34, height: 34, borderRadius: cell.kind === "head" ? "10px" : "6px",
-            backgroundColor: bg, color, display: "flex", alignItems: "center", justifyContent: "center",
-            fontWeight: 800, fontFamily: "monospace", fontSize: 16,
-            border: cell.kind === "tile" ? `1px solid ${ACCENT}55` : "none",
-          }}>
-            {cell.letter}
-          </Box>
-        );
-      })}
-    </Box>
-  );
-}
 
 export default function Home() {
   const navigate = useNavigate();
@@ -118,11 +87,8 @@ export default function Home() {
         <Typography sx={{ color: "#fff", fontSize: 24, fontWeight: 700, lineHeight: 1.4 }}>{t.readyToPlay}</Typography>
 
         <Box sx={{ width: "100%", borderRadius: "24px", backgroundColor: CARD_BG, p: 2, boxShadow: "0 12px 24px rgba(0,0,0,0.18)" }}>
-          <Box sx={{
-            width: "100%", aspectRatio: "1", borderRadius: "16px", backgroundColor: "#f3f3f3",
-            p: 1.25, mb: 2, display: "flex", alignItems: "center", justifyContent: "center",
-          }}>
-            <PreviewStrip />
+          <Box sx={{ mb: 2 }}>
+            <SnakeDemo />
           </Box>
 
           <Box sx={{ display: "flex", justifyContent: "center" }}>
