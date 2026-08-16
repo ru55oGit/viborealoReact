@@ -44,6 +44,7 @@ export default function Game() {
   const [foundWords, setFoundWords] = useState<FoundWordEntry[]>([]);
   const [flashIndices, setFlashIndices] = useState<Set<number> | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
+  const [lastEaten, setLastEaten] = useState<string | null>(null); // TODO: sacar, solo para depurar
 
   const pendingDirectionRef = useRef<Direction>("right");
   const errorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -81,6 +82,10 @@ export default function Game() {
       setDirection(dir);
       gameStateRef.current = result.state;
       setGameState(result.state);
+      if (result.status === "ate") {
+        const head = result.state.path[0];
+        setLastEaten(`"${result.state.letters[0]}" en fila ${head.row}, col ${head.col}`);
+      }
     }, tickIntervalMs(gameState.letters.length));
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -95,7 +100,11 @@ export default function Game() {
 
   function handleDirectionInput(dir: Direction) {
     if (phase !== "playing") return;
-    if (isOpposite(dir, direction)) return;
+    // Validar contra la dirección ya en cola (no la ya aplicada): si el
+    // jugador manda dos direcciones seguidas antes del próximo tick, la
+    // segunda tiene que chequear reversa contra la primera, no contra la
+    // vieja dirección todavía visible en pantalla.
+    if (isOpposite(dir, pendingDirectionRef.current)) return;
     pendingDirectionRef.current = dir;
   }
 
@@ -207,6 +216,13 @@ export default function Game() {
             {t.lengthLabel}: {gameState.letters.length}
           </Typography>
         </Box>
+
+        {/* TODO: sacar, solo para depurar el reporte de "come una letra y muestra otra" */}
+        {lastEaten && (
+          <Typography sx={{ color: "#fff", fontSize: 11, textAlign: "center", mb: 1, opacity: 0.85 }}>
+            última comida: {lastEaten}
+          </Typography>
+        )}
 
         <Box sx={{ position: "relative", borderRadius: "16px", overflow: "hidden", backgroundColor: "#fff", p: 1, mb: 1 }}>
           <SnakeBoard
