@@ -1,17 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import SnakeBoard from "../SnakeBoard";
-import { GridPos, LetterTile, SnakeGameState, currentSegments, pointsForWord } from "../../utils/snakeEngine";
-import { useLanguage } from "../../i18n/LanguageContext";
+import { GridPos, LetterTile, SnakeGameState, currentSegments } from "../../utils/snakeEngine";
 
 // Demo animada para la Home: la cabeza se mueve sola, come letras y arma
 // una palabra real, para mostrar la mecánica sin depender del motor
-// random del juego real (acá todo está guionado a mano).
-const DEMO_WORD = "SOL";
-const HEAD_ROW = 7;
-const START_COL = 2;
-const DECOY_TILE: LetterTile = { row: HEAD_ROW, col: START_COL + 7, letter: "A" };
+// random del juego real (acá todo está guionado a mano). Usa una grilla
+// propia, más chica que la del juego real (12x16), para que el bloque de
+// Home quede con la misma altura que el de Letris (grilla cuadrada 1:1).
+const DEMO_COLS = 8;
+const DEMO_ROWS = 7;
+// La secuencia guionada come S-O-L en orden, formando "SOL".
+const HEAD_ROW = 3;
+const START_COL = 1;
+const DECOY_TILE: LetterTile = { row: HEAD_ROW, col: 6, letter: "A" };
 const EAT_COLS = [START_COL + 1, START_COL + 2, START_COL + 3]; // S, O, L
 
 const START_PAUSE_MS = 600;
@@ -37,10 +39,8 @@ function initialState(): SnakeGameState {
 }
 
 export default function SnakeDemo() {
-  const { t } = useLanguage();
   const [state, setState] = useState<SnakeGameState>(initialState);
   const [flashIndices, setFlashIndices] = useState<Set<number> | null>(null);
-  const [score, setScore] = useState(0);
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
@@ -53,7 +53,6 @@ export default function SnakeDemo() {
       let cur = initialState();
       setState(cur);
       setFlashIndices(null);
-      setScore(0);
 
       let delay = START_PAUSE_MS;
 
@@ -81,7 +80,6 @@ export default function SnakeDemo() {
 
       schedule(() => {
         setFlashIndices(new Set([1, 2, 3]));
-        setScore(pointsForWord(DEMO_WORD));
       }, delay);
       delay += FLASH_MS;
 
@@ -106,24 +104,16 @@ export default function SnakeDemo() {
   const segments = currentSegments(state);
 
   return (
-    <Box sx={{ width: "100%", pointerEvents: "none" }}>
-      <Box sx={{
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        backgroundColor: "rgba(0,0,0,0.18)", borderRadius: "12px", px: 1.5, py: 1, mb: 1,
-      }}>
-        <Typography sx={{ color: "#fff", fontWeight: 800, fontSize: 13 }}>
-          {t.scoreLabel}: {score}
-        </Typography>
-      </Box>
-      <Box sx={{ borderRadius: "16px", backgroundColor: "#fff", p: 1 }}>
-        <SnakeBoard
-          segments={segments}
-          letterTiles={state.letterTiles}
-          direction={state.direction}
-          flashIndices={flashIndices ?? undefined}
-          onSwipe={() => {}}
-        />
-      </Box>
+    <Box sx={{ width: "100%", height: "100%", pointerEvents: "none" }}>
+      <SnakeBoard
+        cols={DEMO_COLS}
+        rows={DEMO_ROWS}
+        segments={segments}
+        letterTiles={state.letterTiles}
+        direction={state.direction}
+        flashIndices={flashIndices ?? undefined}
+        onSwipe={() => {}}
+      />
     </Box>
   );
 }

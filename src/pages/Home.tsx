@@ -87,7 +87,10 @@ export default function Home() {
         <Typography sx={{ color: "#fff", fontSize: 24, fontWeight: 700, lineHeight: 1.4 }}>{t.readyToPlay}</Typography>
 
         <Box sx={{ width: "100%", borderRadius: "24px", backgroundColor: CARD_BG, p: 2, boxShadow: "0 12px 24px rgba(0,0,0,0.18)" }}>
-          <Box sx={{ mb: 2 }}>
+          <Box sx={{
+            width: "100%", aspectRatio: "1", borderRadius: "16px", backgroundColor: "#f3f3f3",
+            p: 1.25, mb: 2,
+          }}>
             <SnakeDemo />
           </Box>
 

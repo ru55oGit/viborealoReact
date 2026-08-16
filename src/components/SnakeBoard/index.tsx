@@ -48,13 +48,18 @@ interface SnakeBoardProps {
   direction: Direction; // hacia dónde mira la cabeza
   flashIndices?: Set<number>; // índices (en `segments`) que se están por borrar, para el flash de éxito
   onSwipe: (direction: Direction) => void;
+  cols?: number; // grilla más chica para la demo de Home; por defecto la del juego real
+  rows?: number;
 }
 
 function key(row: number, col: number): string {
   return `${row}-${col}`;
 }
 
-export default function SnakeBoard({ segments, letterTiles, direction, flashIndices, onSwipe }: SnakeBoardProps) {
+export default function SnakeBoard({
+  segments, letterTiles, direction, flashIndices, onSwipe,
+  cols = GRID_COLS, rows = GRID_ROWS,
+}: SnakeBoardProps) {
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
 
   const segmentByCell = new Map<string, { letter: string; isHead: boolean; flash: boolean }>();
@@ -90,8 +95,8 @@ export default function SnakeBoard({ segments, letterTiles, direction, flashIndi
   }
 
   const cells: React.ReactNode[] = [];
-  for (let r = 0; r < GRID_ROWS; r++) {
-    for (let c = 0; c < GRID_COLS; c++) {
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
       const k = key(r, c);
       const seg = segmentByCell.get(k);
       const tileLetter = tileByCell.get(k);
@@ -161,11 +166,11 @@ export default function SnakeBoard({ segments, letterTiles, direction, flashIndi
       onPointerUp={handlePointerUp}
       sx={{
         display: "grid",
-        gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`,
-        gridTemplateRows: `repeat(${GRID_ROWS}, 1fr)`,
+        gridTemplateColumns: `repeat(${cols}, 1fr)`,
+        gridTemplateRows: `repeat(${rows}, 1fr)`,
         gap: "1.5px",
         width: "100%",
-        aspectRatio: `${GRID_COLS} / ${GRID_ROWS}`,
+        aspectRatio: `${cols} / ${rows}`,
         touchAction: "none",
         userSelect: "none",
       }}
