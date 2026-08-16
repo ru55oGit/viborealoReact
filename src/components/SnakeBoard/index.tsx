@@ -17,25 +17,35 @@ const FLASH_BG = "#2ecc71";
 
 const SWIPE_THRESHOLD_PX = 22;
 
-// La cabeza no muestra letra (es solo la cara de la víbora); los ojos son
-// lo único que se dibuja adentro.
-function eyeSx(left: string) {
+// Los ojos están corridos hacia el borde "delantero" de la celda (asumiendo
+// que la cara mira hacia la derecha por defecto) y ese grupo entero rota
+// según hacia dónde se mueve la víbora, para que la cabeza se note
+// orientada. La letra va abajo, chica, y NO rota (así se lee siempre igual).
+function eyeSx(top: string, left: string) {
   return {
     position: "absolute" as const,
-    top: "38%",
+    top,
     left,
     transform: "translate(-50%, -50%)",
-    width: "26%",
-    height: "26%",
+    width: "22%",
+    height: "22%",
     borderRadius: "50%",
     backgroundColor: "#fff",
     border: "1px solid rgba(0,0,0,0.35)",
   };
 }
 
+const DIRECTION_DEG: Record<Direction, number> = {
+  right: 0,
+  down: 90,
+  left: 180,
+  up: 270,
+};
+
 interface SnakeBoardProps {
   segments: SnakeSegment[];
   letterTiles: LetterTile[];
+  direction: Direction; // hacia dónde mira la cabeza
   flashIndices?: Set<number>; // índices (en `segments`) que se están por borrar, para el flash de éxito
   onSwipe: (direction: Direction) => void;
 }
@@ -44,7 +54,7 @@ function key(row: number, col: number): string {
   return `${row}-${col}`;
 }
 
-export default function SnakeBoard({ segments, letterTiles, flashIndices, onSwipe }: SnakeBoardProps) {
+export default function SnakeBoard({ segments, letterTiles, direction, flashIndices, onSwipe }: SnakeBoardProps) {
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
 
   const segmentByCell = new Map<string, { letter: string; isHead: boolean; flash: boolean }>();
@@ -93,10 +103,10 @@ export default function SnakeBoard({ segments, letterTiles, flashIndices, onSwip
       const isHead = seg?.isHead ?? false;
 
       if (seg) {
-        backgroundColor = seg.flash ? FLASH_BG : isHead ? HEAD_BG : BODY_BG;
+        backgroundColor = isHead ? EMPTY_BG : seg.flash ? FLASH_BG : BODY_BG;
         color = "#fff";
-        letter = isHead ? "" : seg.letter;
-        borderRadius = isHead ? "45% 45% 55% 55% / 60% 60% 40% 40%" : "3px";
+        letter = seg.letter;
+        borderRadius = "3px";
       } else if (tileLetter) {
         backgroundColor = TILE_BG;
         color = ACCENT;
@@ -121,13 +131,36 @@ export default function SnakeBoard({ segments, letterTiles, flashIndices, onSwip
             transition: "background-color 0.12s, color 0.12s",
           }}
         >
-          {isHead && (
+          {isHead ? (
             <>
-              <Box sx={eyeSx("22%")} />
-              <Box sx={eyeSx("68%")} />
+              <Box sx={{
+                position: "absolute",
+                inset: "4%",
+                backgroundColor: seg?.flash ? FLASH_BG : HEAD_BG,
+                // Más redondeada del lado "delantero" (derecha, orientación
+                // base) que del trasero, así al rotar se nota bien el hocico.
+                borderRadius: "20% 60% 60% 20%",
+                transform: `rotate(${DIRECTION_DEG[direction]}deg)`,
+                transition: "transform 0.15s, background-color 0.12s",
+              }}>
+                <Box sx={eyeSx("35%", "62%")} />
+                <Box sx={eyeSx("65%", "75%")} />
+              </Box>
+              <Box sx={{
+                position: "absolute",
+                bottom: "6%",
+                left: "50%",
+                transform: "translateX(-50%)",
+                fontSize: "0.55em",
+                lineHeight: 1,
+                color: "#fff",
+              }}>
+                {letter}
+              </Box>
             </>
+          ) : (
+            letter
           )}
-          {letter}
         </Box>
       );
     }

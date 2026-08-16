@@ -212,6 +212,7 @@ export default function Game() {
           <SnakeBoard
             segments={segments}
             letterTiles={gameState.letterTiles}
+            direction={direction}
             flashIndices={flashIndices ?? undefined}
             onSwipe={handleDirectionInput}
           />
