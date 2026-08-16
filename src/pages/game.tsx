@@ -100,7 +100,23 @@ export default function Game() {
     // segunda tiene que chequear reversa contra la primera, no contra la
     // vieja dirección todavía visible en pantalla.
     if (isOpposite(dir, pendingDirectionRef.current)) return;
+
+    // Si ya estaba yendo para ese lado y vuelve a apretar la misma
+    // dirección, avanza un casillero de una: esperar al próximo tick se
+    // siente lento cuando el jugador ya sabe a qué letra apunta, así que
+    // insistir en la tecla es la forma de moverse más rápido a destino.
+    const alreadyMoving = dir === pendingDirectionRef.current;
     pendingDirectionRef.current = dir;
+    if (!alreadyMoving) return;
+
+    const result = stepSnake(gameStateRef.current, dir, langRef.current);
+    if (result.status === "gameover") {
+      setPhase("gameover");
+      return;
+    }
+    setDirection(dir);
+    gameStateRef.current = result.state;
+    setGameState(result.state);
   }
 
   function scheduleErrorClear() {
