@@ -75,21 +75,37 @@ const LETTER_WEIGHTS: Record<SupportedLanguage, Record<string, number>> = {
   },
 };
 
-const weightedAlphabetCache: Partial<Record<SupportedLanguage, string[]>> = {};
+const VOWELS = new Set(["A", "E", "I", "O", "U"]);
+export type LetterCategory = "vowel" | "consonant";
 
-function weightedAlphabet(lang: SupportedLanguage): string[] {
-  const cached = weightedAlphabetCache[lang];
+export function categoryOf(letter: string): LetterCategory {
+  return VOWELS.has(letter) ? "vowel" : "consonant";
+}
+
+function oppositeCategory(category: LetterCategory): LetterCategory {
+  return category === "vowel" ? "consonant" : "vowel";
+}
+
+const weightedAlphabetCache: Partial<Record<string, string[]>> = {};
+
+// `category` filtra el pool a solo vocales o solo consonantes: así el
+// llamador puede forzar el balance (ver `replenishLetters`) sin tocar los
+// pesos relativos dentro de cada categoría.
+function weightedAlphabet(lang: SupportedLanguage, category?: LetterCategory): string[] {
+  const cacheKey = `${lang}:${category ?? "all"}`;
+  const cached = weightedAlphabetCache[cacheKey];
   if (cached) return cached;
   const pool: string[] = [];
   for (const [letter, weight] of Object.entries(LETTER_WEIGHTS[lang])) {
+    if (category && categoryOf(letter) !== category) continue;
     for (let i = 0; i < weight; i++) pool.push(letter);
   }
-  weightedAlphabetCache[lang] = pool;
+  weightedAlphabetCache[cacheKey] = pool;
   return pool;
 }
 
-export function randomLetter(lang: SupportedLanguage): string {
-  const pool = weightedAlphabet(lang);
+export function randomLetter(lang: SupportedLanguage, category?: LetterCategory): string {
+  const pool = weightedAlphabet(lang, category);
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
@@ -107,7 +123,7 @@ export function currentSegments(state: SnakeGameState): SnakeSegment[] {
   return [head, ...body];
 }
 
-function spawnLetterTile(lang: SupportedLanguage, occupied: Set<string>): LetterTile | null {
+function spawnLetterTile(lang: SupportedLanguage, occupied: Set<string>, category?: LetterCategory): LetterTile | null {
   const freeCells: GridPos[] = [];
   for (let r = 0; r < GRID_ROWS; r++) {
     for (let c = 0; c < GRID_COLS; c++) {
@@ -117,20 +133,28 @@ function spawnLetterTile(lang: SupportedLanguage, occupied: Set<string>): Letter
   }
   if (freeCells.length === 0) return null;
   const pos = freeCells[Math.floor(Math.random() * freeCells.length)];
-  return { ...pos, letter: randomLetter(lang) };
+  return { ...pos, letter: randomLetter(lang, category) };
 }
 
-function replenishLetters(state: SnakeGameState, lang: SupportedLanguage): LetterTile[] {
+// `startCategory` fuerza la categoría (vocal/consonante) de la primera
+// letra que se agrega, y de ahí en más alterna: así el tablero nunca queda
+// empachado de puras vocales (o puras consonantes) por mala suerte del
+// pool ponderado. Al arrancar la partida alterna las 6 letras iniciales;
+// al reponer una sola letra (después de comer), la fuerza opuesta a la
+// que se acaba de comer.
+function replenishLetters(state: SnakeGameState, lang: SupportedLanguage, startCategory: LetterCategory): LetterTile[] {
   const occupied = new Set<string>();
   for (const seg of currentSegments(state)) occupied.add(posKey(seg));
   const tiles = [...state.letterTiles];
   for (const t of tiles) occupied.add(posKey(t));
 
+  let category = startCategory;
   while (tiles.length < MAX_LETTERS_ON_BOARD) {
-    const tile = spawnLetterTile(lang, occupied);
+    const tile = spawnLetterTile(lang, occupied, category);
     if (!tile) break;
     tiles.push(tile);
     occupied.add(posKey(tile));
+    category = oppositeCategory(category);
   }
   return tiles;
 }
@@ -146,7 +170,7 @@ export function createInitialState(lang: SupportedLanguage): SnakeGameState {
   const letters: string[] = [];
 
   let state: SnakeGameState = { path, letters, letterTiles: [], direction };
-  state = { ...state, letterTiles: replenishLetters(state, lang) };
+  state = { ...state, letterTiles: replenishLetters(state, lang, "vowel") };
   return state;
 }
 
@@ -183,7 +207,10 @@ export function stepSnake(state: SnakeGameState, direction: Direction, lang: Sup
 
   let nextState: SnakeGameState = { path: newPath, letters: newLetters, letterTiles: remainingTiles, direction };
   if (isEating) {
-    nextState = { ...nextState, letterTiles: replenishLetters(nextState, lang) };
+    // La letra que repone al toque es de la categoría opuesta a la que se
+    // acaba de comer, para que el tablero no se desbalancee.
+    const eatenCategory = categoryOf(state.letterTiles[eatenIndex].letter);
+    nextState = { ...nextState, letterTiles: replenishLetters(nextState, lang, oppositeCategory(eatenCategory)) };
   }
 
   return { status: isEating ? "ate" : "moved", state: nextState };
