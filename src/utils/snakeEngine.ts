@@ -56,12 +56,12 @@ export function isOpposite(a: Direction, b: Direction): boolean {
 // letras comunes (vocales, S/R/N/T...) salgan mucho más seguido.
 const LETTER_WEIGHTS: Record<SupportedLanguage, Record<string, number>> = {
   es: {
-    // Vocales y V/B/S/T/C reforzadas a propósito, para que salgan mucho
-    // más seguido y sea más viable armar palabras.
-    A: 16, E: 18, O: 13, I: 10, U: 8,
-    S: 12, T: 9, C: 9, B: 7, V: 6,
-    R: 7, N: 7, D: 5, L: 5, M: 3, P: 3, G: 1, Y: 1, Q: 1, H: 1,
-    F: 1, Z: 1, J: 1, X: 1, K: 1, W: 1,
+    // Proporción a propósito: 3 vocales por cada consonante (suma vocales
+    // 90, suma consonantes 30), para que sea mucho más viable armar
+    // palabras. Entre las consonantes, S/T/C/B/V/R/N/D siguen reforzadas.
+    A: 22, E: 25, O: 18, I: 14, U: 11,
+    S: 3, T: 2, C: 2, B: 2, V: 2, R: 2, N: 2, D: 2, L: 1, M: 1,
+    P: 1, G: 1, Y: 1, Q: 1, H: 1, F: 1, Z: 1, J: 1, X: 1, K: 1, W: 1,
   },
   en: {
     E: 13, T: 9, A: 8, O: 8, I: 7, N: 7, S: 6, H: 6, R: 6, D: 4,
