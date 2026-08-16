@@ -4,7 +4,6 @@ import { isValidWord } from "../data/dictionaries";
 export const GRID_COLS = 12;
 export const GRID_ROWS = 16;
 export const MAX_LETTERS_ON_BOARD = 6;
-export const INITIAL_SNAKE_LENGTH = 1;
 export const BASE_TICK_MS = 650;
 export const MIN_TICK_MS = 325;
 const MAX_PATH_LENGTH = 2000; // más que de sobra: el largo máximo real está acotado por GRID_COLS*GRID_ROWS
@@ -25,14 +24,16 @@ export interface SnakeSegment extends GridPos {
 }
 
 // Path de posiciones de la cabeza, más reciente primero (path[0] = cabeza
-// actual). Crece un paso por tick SIEMPRE (coma o no coma). El cuerpo
-// visible es siempre `path.slice(0, letters.length)`, así que al sacar
-// letras del medio (por una palabra detectada) la cola se "reconecta" sola:
-// no hace falta recalcular posiciones a mano, el slice ya da un camino
-// contiguo válido.
+// actual). Crece un paso por tick SIEMPRE (coma o no coma). La cabeza
+// (path[0]) nunca tiene letra propia: es solo la "nariz" que se mueve. Las
+// letras reales arrancan en path[1] — letters[0] es la más reciente comida,
+// visible al toque en esa posición, sin ningún paso oculto de por medio.
+// El cuerpo visible siempre sale de `path.slice(1, letters.length + 1)`, así
+// que al sacar letras del medio (por una palabra detectada) la cola se
+// "reconecta" sola: no hace falta recalcular posiciones a mano.
 export interface SnakeGameState {
   path: GridPos[];
-  letters: string[]; // letters[0] = letra en la cabeza (la comida más reciente)
+  letters: string[]; // letters[0] = letra en la primera posición detrás de la cabeza
   letterTiles: LetterTile[];
   direction: Direction;
 }
@@ -98,7 +99,9 @@ export function isWithinBounds(pos: GridPos): boolean {
 }
 
 export function currentSegments(state: SnakeGameState): SnakeSegment[] {
-  return state.letters.map((letter, i) => ({ ...state.path[i], letter }));
+  const head: SnakeSegment = { ...state.path[0], letter: "" };
+  const body = state.letters.map((letter, i) => ({ ...state.path[i + 1], letter }));
+  return [head, ...body];
 }
 
 function spawnLetterTile(lang: SupportedLanguage, occupied: Set<string>): LetterTile | null {
@@ -134,13 +137,10 @@ export function createInitialState(lang: SupportedLanguage): SnakeGameState {
   const startCol = Math.floor(GRID_COLS / 2);
   const direction: Direction = "right";
 
-  // El path arranca con INITIAL_SNAKE_LENGTH posiciones hacia atrás de la
-  // dirección inicial, como si la víbora ya viniera caminando.
-  const path: GridPos[] = Array.from({ length: INITIAL_SNAKE_LENGTH }, (_, i) => ({
-    row: startRow,
-    col: startCol - i,
-  }));
-  const letters = Array.from({ length: INITIAL_SNAKE_LENGTH }, () => randomLetter(lang));
+  // Arranca solo con la cabeza (sin letras todavía): la primera letra que
+  // comas aparece de una en la posición 1, sin ningún paso oculto.
+  const path: GridPos[] = [{ row: startRow, col: startCol }];
+  const letters: string[] = [];
 
   let state: SnakeGameState = { path, letters, letterTiles: [], direction };
   state = { ...state, letterTiles: replenishLetters(state, lang) };
@@ -215,14 +215,12 @@ export function pointsForWord(word: string): number {
   return 10 + lengthBonus;
 }
 
-export function removeWordFromState(state: SnakeGameState, match: WordMatch, lang: SupportedLanguage): SnakeGameState {
+export function removeWordFromState(state: SnakeGameState, match: WordMatch): SnakeGameState {
+  // Llegar a largo 0 acá es válido (la cabeza nunca depende de tener letras):
+  // significa que la palabra detectada usaba todo el cuerpo, "cuerpo limpio".
   const letters = [
     ...state.letters.slice(0, match.startIndex),
     ...state.letters.slice(match.startIndex + match.length),
   ];
-  // Si la palabra detectada usaba TODO el cuerpo, no podemos dejar la
-  // víbora en largo 0 (rompería el juego: no habría cabeza). Sigue con una
-  // letra nueva en la misma posición, como si arrancara de nuevo ahí mismo.
-  if (letters.length === 0) letters.push(randomLetter(lang));
   return { ...state, letters };
 }

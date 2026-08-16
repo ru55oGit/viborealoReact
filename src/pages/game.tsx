@@ -44,7 +44,6 @@ export default function Game() {
   const [foundWords, setFoundWords] = useState<FoundWordEntry[]>([]);
   const [flashIndices, setFlashIndices] = useState<Set<number> | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
-  const [lastEaten, setLastEaten] = useState<string | null>(null); // TODO: sacar, solo para depurar
 
   const pendingDirectionRef = useRef<Direction>("right");
   const errorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -82,10 +81,6 @@ export default function Game() {
       setDirection(dir);
       gameStateRef.current = result.state;
       setGameState(result.state);
-      if (result.status === "ate") {
-        const head = result.state.path[0];
-        setLastEaten(`"${result.state.letters[0]}" en fila ${head.row}, col ${head.col}`);
-      }
     }, tickIntervalMs(gameState.letters.length));
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -115,19 +110,18 @@ export default function Game() {
 
   function handleDetectWord() {
     if (phase !== "playing" || flashIndices) return;
-    // La letra de la cabeza (índice 0) queda afuera de la evaluación: recién
-    // cuenta para formar palabras cuando pasa a la posición 1 (ya visible en
-    // el cuerpo). Por eso ni hace falta mostrarla en la cabeza.
-    const rawMatch = detectWordInBody(gameState.letters.slice(1), currentLanguage);
-    if (!rawMatch) {
+    const match = detectWordInBody(gameState.letters, currentLanguage);
+    if (!match) {
       setErrorMsg(t.errorNoWordFound);
       scheduleErrorClear();
       return;
     }
-    const match = { ...rawMatch, startIndex: rawMatch.startIndex + 1 };
 
+    // flashIndices marca posiciones en `segments` (índice 0 = cabeza, sin
+    // letra), así que van corridas +1 respecto a los índices de `letters`
+    // que devuelve el match.
     const indices = new Set<number>();
-    for (let i = match.startIndex; i < match.startIndex + match.length; i++) indices.add(i);
+    for (let i = match.startIndex; i < match.startIndex + match.length; i++) indices.add(i + 1);
     setFlashIndices(indices);
 
     const points = pointsForWord(match.word);
@@ -136,7 +130,7 @@ export default function Game() {
 
     if (clearTimeoutRef.current) clearTimeout(clearTimeoutRef.current);
     clearTimeoutRef.current = setTimeout(() => {
-      setGameState((prev) => removeWordFromState(prev, match, currentLanguage));
+      setGameState((prev) => removeWordFromState(prev, match));
       setFlashIndices(null);
     }, CLEAR_DELAY_MS);
   }
@@ -220,13 +214,6 @@ export default function Game() {
             {t.lengthLabel}: {gameState.letters.length}
           </Typography>
         </Box>
-
-        {/* TODO: sacar, solo para depurar el reporte de "come una letra y muestra otra" */}
-        {lastEaten && (
-          <Typography sx={{ color: "#fff", fontSize: 11, textAlign: "center", mb: 1, opacity: 0.85 }}>
-            última comida: {lastEaten}
-          </Typography>
-        )}
 
         <Box sx={{ position: "relative", borderRadius: "16px", overflow: "hidden", backgroundColor: "#fff", p: 1, mb: 1 }}>
           <SnakeBoard
