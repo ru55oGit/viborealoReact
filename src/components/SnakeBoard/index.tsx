@@ -143,8 +143,8 @@ export default function SnakeBoard({ segments, letterTiles, direction, flashIndi
                 transform: `rotate(${DIRECTION_DEG[direction]}deg)`,
                 transition: "transform 0.15s, background-color 0.12s",
               }}>
-                <Box sx={eyeSx("35%", "62%")} />
-                <Box sx={eyeSx("65%", "75%")} />
+                <Box sx={eyeSx("40%", "68%")} />
+                <Box sx={eyeSx("60%", "68%")} />
               </Box>
               <Box sx={{
                 position: "absolute",
