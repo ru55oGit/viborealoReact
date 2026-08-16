@@ -115,12 +115,16 @@ export default function Game() {
 
   function handleDetectWord() {
     if (phase !== "playing" || flashIndices) return;
-    const match = detectWordInBody(gameState.letters, currentLanguage);
-    if (!match) {
+    // La letra de la cabeza (índice 0) queda afuera de la evaluación: recién
+    // cuenta para formar palabras cuando pasa a la posición 1 (ya visible en
+    // el cuerpo). Por eso ni hace falta mostrarla en la cabeza.
+    const rawMatch = detectWordInBody(gameState.letters.slice(1), currentLanguage);
+    if (!rawMatch) {
       setErrorMsg(t.errorNoWordFound);
       scheduleErrorClear();
       return;
     }
+    const match = { ...rawMatch, startIndex: rawMatch.startIndex + 1 };
 
     const indices = new Set<number>();
     for (let i = match.startIndex; i < match.startIndex + match.length; i++) indices.add(i);

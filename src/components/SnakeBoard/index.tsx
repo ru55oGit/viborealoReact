@@ -17,18 +17,18 @@ const FLASH_BG = "#2ecc71";
 
 const SWIPE_THRESHOLD_PX = 22;
 
-// Los ojos están corridos hacia el borde "delantero" de la celda (asumiendo
-// que la cara mira hacia la derecha por defecto) y ese grupo entero rota
-// según hacia dónde se mueve la víbora, para que la cabeza se note
-// orientada. La letra va abajo, chica, y NO rota (así se lee siempre igual).
+// Los ojos son chicos y van pegados a una esquina (no compiten por el
+// centro de la celda, que es donde tiene que ir la letra bien grande para
+// que se lea en una pantalla real). El grupo entero rota según hacia dónde
+// se mueve la víbora, así se nota la orientación sin sacrificar la letra.
 function eyeSx(top: string, left: string) {
   return {
     position: "absolute" as const,
     top,
     left,
     transform: "translate(-50%, -50%)",
-    width: "22%",
-    height: "22%",
+    width: "16%",
+    height: "16%",
     borderRadius: "50%",
     backgroundColor: "#fff",
     border: "1px solid rgba(0,0,0,0.35)",
@@ -145,17 +145,6 @@ export default function SnakeBoard({ segments, letterTiles, direction, flashIndi
               }}>
                 <Box sx={eyeSx("40%", "68%")} />
                 <Box sx={eyeSx("60%", "68%")} />
-              </Box>
-              <Box sx={{
-                position: "absolute",
-                bottom: "6%",
-                left: "50%",
-                transform: "translateX(-50%)",
-                fontSize: "0.55em",
-                lineHeight: 1,
-                color: "#fff",
-              }}>
-                {letter}
               </Box>
             </>
           ) : (
