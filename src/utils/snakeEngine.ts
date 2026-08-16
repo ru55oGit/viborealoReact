@@ -3,7 +3,7 @@ import { isValidWord } from "../data/dictionaries";
 
 export const GRID_COLS = 12;
 export const GRID_ROWS = 16;
-export const MAX_LETTERS_ON_BOARD = 6;
+export const MAX_LETTERS_ON_BOARD = 15;
 export const BASE_TICK_MS = 650;
 export const MIN_TICK_MS = 325;
 const MAX_PATH_LENGTH = 2000; // más que de sobra: el largo máximo real está acotado por GRID_COLS*GRID_ROWS

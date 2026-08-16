@@ -11,7 +11,8 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 ### Changed
 - Game over: mover los botones "Jugar de nuevo"/"Volver al inicio" debajo del box de palabras encontradas, y sacar el título "Palabras formadas" afuera del box gris (mismo estilo que Letris)
 - Letras (ES): subir la proporción de vocales a 3 por cada consonante (antes ~0.8x) para que sea mucho más viable armar palabras
-- Letras: el tablero ya no queda desbalanceado por mala suerte del sorteo — arranca alternando vocal/consonante (3 y 3 de las 6 iniciales) y, después de comer, la letra que repone es siempre de la categoría opuesta a la comida
+- Letras: el tablero ya no queda desbalanceado por mala suerte del sorteo — arranca alternando vocal/consonante y, después de comer, la letra que repone es siempre de la categoría opuesta a la comida
+- Letras: subir el máximo de letras en tablero de 6 a 15 (quedaban pocas para elegir), sigue mitad vocales mitad consonantes
 - Controles: si ya vas para un lado y apretás esa misma dirección de nuevo (tecla, botón o swipe), avanza un casillero de una en vez de esperar al próximo tick — insistir en la tecla ahora sirve para llegar más rápido a la letra que se busca
 
 ### Added
