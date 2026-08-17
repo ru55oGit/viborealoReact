@@ -3,10 +3,30 @@ import { isValidWord } from "../data/dictionaries";
 
 export const GRID_COLS = 12;
 export const GRID_ROWS = 16;
-export const MAX_LETTERS_ON_BOARD = 15;
+export const BASE_MAX_LETTERS_ON_BOARD = 15;
 export const BASE_TICK_MS = 650;
 export const MIN_TICK_MS = 325;
 const MAX_PATH_LENGTH = 2000; // más que de sobra: el largo máximo real está acotado por GRID_COLS*GRID_ROWS
+
+// Niveles: cada WORDS_PER_LEVEL palabras encontradas (constante, a
+// diferencia de Letris donde el objetivo por nivel va creciendo) se sube
+// de nivel. La dificultad no pasa por la velocidad acá, sino por el tope
+// de letras en tablero, que sube LETTERS_STEP_PER_LEVEL cada vez: nivel 1
+// arranca en 15, nivel 2 en 20, nivel 3 en 25, etc.
+export const WORDS_PER_LEVEL = 5;
+export const LETTERS_STEP_PER_LEVEL = 5;
+
+export function levelFromWordsFound(wordsFound: number): number {
+  return Math.floor(wordsFound / WORDS_PER_LEVEL) + 1;
+}
+
+export function wordsIntoCurrentLevel(wordsFound: number): number {
+  return wordsFound % WORDS_PER_LEVEL;
+}
+
+export function maxLettersForLevel(level: number): number {
+  return BASE_MAX_LETTERS_ON_BOARD + (level - 1) * LETTERS_STEP_PER_LEVEL;
+}
 
 export type Direction = "up" | "down" | "left" | "right";
 
@@ -163,14 +183,16 @@ function spawnLetterTile(lang: SupportedLanguage, occupied: Set<string>, categor
 // pool ponderado. Al arrancar la partida alterna las 6 letras iniciales;
 // al reponer una sola letra (después de comer), la fuerza opuesta a la
 // que se acaba de comer.
-function replenishLetters(state: SnakeGameState, lang: SupportedLanguage, startCategory: LetterCategory): LetterTile[] {
+function replenishLetters(
+  state: SnakeGameState, lang: SupportedLanguage, startCategory: LetterCategory, maxLetters: number,
+): LetterTile[] {
   const occupied = new Set<string>();
   for (const seg of currentSegments(state)) occupied.add(posKey(seg));
   const tiles = [...state.letterTiles];
   for (const t of tiles) occupied.add(posKey(t));
 
   let category = startCategory;
-  while (tiles.length < MAX_LETTERS_ON_BOARD) {
+  while (tiles.length < maxLetters) {
     const tile = spawnLetterTile(lang, occupied, category);
     if (!tile) break;
     tiles.push(tile);
@@ -180,7 +202,23 @@ function replenishLetters(state: SnakeGameState, lang: SupportedLanguage, startC
   return tiles;
 }
 
-export function createInitialState(lang: SupportedLanguage): SnakeGameState {
+// Categoría (vocal/consonante) menos representada en el tablero actual —
+// para reponer de a una sin desbalancear (mismo criterio que ya usa el
+// premio de traspasar la pared).
+function leastRepresentedCategory(tiles: LetterTile[]): LetterCategory {
+  const vowelCount = tiles.filter((t) => categoryOf(t.letter) === "vowel").length;
+  return vowelCount * 2 > tiles.length ? "consonant" : "vowel";
+}
+
+// Al subir de nivel, sube el tope de letras en tablero: repone de una para
+// que el jugador vea el tablero más lleno apenas termina el cartel de
+// "subiste de nivel", en vez de ir goteando de a una en las próximas comidas.
+export function growLetterPool(state: SnakeGameState, lang: SupportedLanguage, maxLetters: number): SnakeGameState {
+  const startCategory = leastRepresentedCategory(state.letterTiles);
+  return { ...state, letterTiles: replenishLetters(state, lang, startCategory, maxLetters) };
+}
+
+export function createInitialState(lang: SupportedLanguage, maxLetters: number = BASE_MAX_LETTERS_ON_BOARD): SnakeGameState {
   const startRow = Math.floor(GRID_ROWS / 2);
   const startCol = Math.floor(GRID_COLS / 2);
   const direction: Direction = "right";
@@ -191,7 +229,7 @@ export function createInitialState(lang: SupportedLanguage): SnakeGameState {
   const letters: string[] = [];
 
   let state: SnakeGameState = { path, letters, letterTiles: [], direction };
-  state = { ...state, letterTiles: replenishLetters(state, lang, "vowel") };
+  state = { ...state, letterTiles: replenishLetters(state, lang, "vowel", maxLetters) };
   return state;
 }
 
@@ -203,7 +241,9 @@ export type StepResult =
   | { status: "moved" | "ate"; state: SnakeGameState }
   | { status: "gameover" };
 
-export function stepSnake(state: SnakeGameState, direction: Direction, lang: SupportedLanguage): StepResult {
+export function stepSnake(
+  state: SnakeGameState, direction: Direction, lang: SupportedLanguage, maxLetters: number,
+): StepResult {
   const segments = currentSegments(state);
   const head = segments[0];
   const delta = DIRECTION_DELTA[direction];
@@ -230,20 +270,23 @@ export function stepSnake(state: SnakeGameState, direction: Direction, lang: Sup
     // La letra que repone al toque es de la categoría opuesta a la que se
     // acaba de comer, para que el tablero no se desbalancee.
     const eatenCategory = categoryOf(state.letterTiles[eatenIndex].letter);
-    nextState = { ...nextState, letterTiles: replenishLetters(nextState, lang, oppositeCategory(eatenCategory)) };
+    nextState = {
+      ...nextState,
+      letterTiles: replenishLetters(nextState, lang, oppositeCategory(eatenCategory), maxLetters),
+    };
   }
 
   if (wrapped) {
     // Premio por cruzar: una ficha extra en el tablero, además de las que
-    // ya haya (no reemplaza el reparto normal de arriba). Se sortea de la
-    // categoría menos representada en el tablero actual — si no, al no
-    // pasar ninguna categoría (pool sin filtrar), salía casi siempre vocal,
-    // porque el pool general está pesado 3 a 1 a favor de las vocales.
+    // ya haya (no reemplaza el reparto normal de arriba, ni cuenta contra
+    // el tope del nivel). Se sortea de la categoría menos representada en
+    // el tablero actual — si no, al no pasar ninguna categoría (pool sin
+    // filtrar), salía casi siempre vocal, porque el pool general está
+    // pesado 3 a 1 a favor de las vocales.
     const occupied = new Set<string>();
     for (const seg of currentSegments(nextState)) occupied.add(posKey(seg));
     for (const t of nextState.letterTiles) occupied.add(posKey(t));
-    const vowelCount = nextState.letterTiles.filter((t) => categoryOf(t.letter) === "vowel").length;
-    const bonusCategory: LetterCategory = vowelCount * 2 > nextState.letterTiles.length ? "consonant" : "vowel";
+    const bonusCategory = leastRepresentedCategory(nextState.letterTiles);
     const bonusTile = spawnLetterTile(lang, occupied, bonusCategory);
     if (bonusTile) {
       nextState = { ...nextState, letterTiles: [...nextState.letterTiles, bonusTile] };

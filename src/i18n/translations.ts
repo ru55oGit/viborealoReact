@@ -29,6 +29,10 @@ export interface Translation {
   // Game
   scoreLabel: string;
   lengthLabel: string;
+  levelLabel: string;
+  levelGoalLabel: (current: number, total: number) => string;
+  levelUpTitle: (level: number) => string;
+  levelReachedLabel: (level: number) => string;
   wordsListTitle: string;
   wordsListEmpty: string;
   detectWordButton: string;
@@ -65,6 +69,10 @@ const es: Translation = {
 
   scoreLabel: "Puntos",
   lengthLabel: "Largo",
+  levelLabel: "Nivel",
+  levelGoalLabel: (current, total) => `Objetivo: ${current}/${total} palabras`,
+  levelUpTitle: (level) => `¡Nivel ${level}!`,
+  levelReachedLabel: (level) => `Nivel alcanzado: ${level}`,
   wordsListTitle: "Palabras formadas",
   wordsListEmpty: "Comé letras y apretá \"Detectar palabra\"",
   detectWordButton: "Detectar palabra",
@@ -101,6 +109,10 @@ const en: Translation = {
 
   scoreLabel: "Score",
   lengthLabel: "Length",
+  levelLabel: "Level",
+  levelGoalLabel: (current, total) => `Goal: ${current}/${total} words`,
+  levelUpTitle: (level) => `Level ${level}!`,
+  levelReachedLabel: (level) => `Level reached: ${level}`,
   wordsListTitle: "Words spelled",
   wordsListEmpty: "Eat letters and press \"Detect word\"",
   detectWordButton: "Detect word",
@@ -137,6 +149,10 @@ const pt: Translation = {
 
   scoreLabel: "Pontos",
   lengthLabel: "Tamanho",
+  levelLabel: "Nível",
+  levelGoalLabel: (current, total) => `Objetivo: ${current}/${total} palavras`,
+  levelUpTitle: (level) => `Nível ${level}!`,
+  levelReachedLabel: (level) => `Nível alcançado: ${level}`,
   wordsListTitle: "Palavras formadas",
   wordsListEmpty: "Coma letras e aperte \"Detectar palavra\"",
   detectWordButton: "Detectar palavra",
