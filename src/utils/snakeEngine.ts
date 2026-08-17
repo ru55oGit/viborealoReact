@@ -261,9 +261,13 @@ export interface WordMatch {
 
 // Recorre el cuerpo en orden cronológico (cola->cabeza, o sea el orden en que
 // se fueron comiendo las letras) y busca la substring válida más larga. Si
-// hay varias del mismo largo máximo, gana la que aparece primero.
+// no hay nada de un largo dado, prueba leyendo ese mismo tramo al revés
+// (cabeza->cola) — el jugador arma la palabra mirando el cuerpo tal como
+// se ve en pantalla, no necesariamente en el orden en que la comió. Entre
+// dos matches del mismo largo, gana el de la lectura cronológica.
 export function detectWordInBody(letters: string[], lang: SupportedLanguage): WordMatch | null {
-  const chrono = [...letters].reverse().join("");
+  const chrono = [...letters].reverse().join(""); // viejo -> nuevo
+  const reverseChrono = letters.join(""); // nuevo -> viejo (letters[0] ya es el más reciente)
 
   for (let length = chrono.length; length >= 3; length--) {
     for (let start = 0; start + length <= chrono.length; start++) {
@@ -271,6 +275,12 @@ export function detectWordInBody(letters: string[], lang: SupportedLanguage): Wo
       if (isValidWord(candidate, lang)) {
         const startIndex = letters.length - start - length;
         return { word: candidate, startIndex, length };
+      }
+    }
+    for (let start = 0; start + length <= reverseChrono.length; start++) {
+      const candidate = reverseChrono.slice(start, start + length);
+      if (isValidWord(candidate, lang)) {
+        return { word: candidate, startIndex: start, length };
       }
     }
   }

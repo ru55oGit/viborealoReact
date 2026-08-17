@@ -9,6 +9,7 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 - Home: reemplazar la preview estática por una demo animada (componente `SnakeDemo`) donde la cabeza se mueve sola, come S-O-L, gira y detecta la palabra, en loop — reusa el mismo `SnakeBoard` del juego real
 - Diccionario (ES): agregar "wifi" a `EXTRA_WORDS_ES` (no está en an-array-of-spanish-words)
 - SEO: comprado el dominio viborealo.com — agregar og:url y canonical (faltaban), corregir el `Sitemap:` de robots.txt (apuntaba a letris.net, copiado sin actualizar) y agregar sitemap.xml (faltaba)
+- Detectar palabra: si no hay match leyendo el cuerpo en orden cronológico, probar también leyéndolo al revés — el jugador arma la palabra mirando el cuerpo en pantalla, no necesariamente en el orden en que la fue comiendo
 
 ### Changed
 - Letras (EN/PT): aplicar el mismo criterio que ya tenía ES — vocales bien reforzadas sobre consonantes, y entre las consonantes, un grupo de letras poco frecuentes (J/K/Q/V/X/Z en inglés, J/K/W/X/Y/Z en portugués) al piso del pool
