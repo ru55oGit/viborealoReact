@@ -172,6 +172,10 @@ export default function Game() {
       else if (e.key === "ArrowDown") handleDirectionInput("down");
       else if (e.key === "ArrowLeft") handleDirectionInput("left");
       else if (e.key === "ArrowRight") handleDirectionInput("right");
+      else if (e.key === " " || e.code === "Space") {
+        e.preventDefault(); // la barra espaciadora scrollea la página por default
+        handleDetectWord();
+      }
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);

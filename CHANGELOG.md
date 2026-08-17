@@ -16,6 +16,8 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 - Controles: si ya vas para un lado y apretás esa misma dirección de nuevo (tecla, botón o swipe), avanza un casillero de una en vez de esperar al próximo tick — insistir en la tecla ahora sirve para llegar más rápido a la letra que se busca
 - Home: el bloque de "Jugar" (demo + botón) usa el mismo box cuadrado 1:1 que Letris, así que queda con la misma altura. `SnakeBoard` ahora acepta `cols`/`rows` opcionales para poder mostrar una grilla más chica (8x7) en la demo, sin tocar el tablero real (12x16) del juego
 - Traspasar paredes: la cabeza ya no muere contra el borde, aparece por el lado opuesto (misma fila/columna). Ya solo se pierde por chocar contra el propio cuerpo. Cada cruce agrega una ficha de letra extra al tablero, como premio
+- Letras (ES): bajar la frecuencia de H/X/Y/Z/K/W/Q — quedan al piso del pool, 3 del resto de las consonantes por cada 1 de este grupo
+- Controles: en desktop, la barra espaciadora también dispara "Detectar palabra" (además del botón)
 
 ### Fixed
 - Game over: el botón "Jugar de nuevo" se veía en blanco un instante al cargar la pantalla (el `variant="contained"` de MUI pintaba el fondo con el rojo del tema antes de que el `sx` lo pisara a blanco)
