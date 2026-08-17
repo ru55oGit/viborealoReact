@@ -113,8 +113,20 @@ function posKey(pos: GridPos): string {
   return `${pos.row}-${pos.col}`;
 }
 
-export function isWithinBounds(pos: GridPos): boolean {
-  return pos.row >= 0 && pos.row < GRID_ROWS && pos.col >= 0 && pos.col < GRID_COLS;
+// Si la cabeza se sale del tablero, aparece del otro lado (misma fila o
+// columna): no hay muerte por pared, solo por choque contra el propio
+// cuerpo. El resto del cuerpo va a ir "reapareciendo" del otro lado solo,
+// letra por letra, a medida que pasan los ticks — es una consecuencia
+// natural de cómo `path` guarda el historial de posiciones, no hace falta
+// lógica extra para ese efecto.
+function wrapPos(pos: GridPos): { pos: GridPos; wrapped: boolean } {
+  let { row, col } = pos;
+  let wrapped = false;
+  if (col < 0) { col = GRID_COLS - 1; wrapped = true; }
+  else if (col >= GRID_COLS) { col = 0; wrapped = true; }
+  if (row < 0) { row = GRID_ROWS - 1; wrapped = true; }
+  else if (row >= GRID_ROWS) { row = 0; wrapped = true; }
+  return { pos: { row, col }, wrapped };
 }
 
 export function currentSegments(state: SnakeGameState): SnakeSegment[] {
@@ -186,9 +198,8 @@ export function stepSnake(state: SnakeGameState, direction: Direction, lang: Sup
   const segments = currentSegments(state);
   const head = segments[0];
   const delta = DIRECTION_DELTA[direction];
-  const newHeadPos: GridPos = { row: head.row + delta.row, col: head.col + delta.col };
-
-  if (!isWithinBounds(newHeadPos)) return { status: "gameover" };
+  const rawHeadPos: GridPos = { row: head.row + delta.row, col: head.col + delta.col };
+  const { pos: newHeadPos, wrapped } = wrapPos(rawHeadPos);
 
   const eatenIndex = state.letterTiles.findIndex((t) => t.row === newHeadPos.row && t.col === newHeadPos.col);
   const isEating = eatenIndex !== -1;
@@ -211,6 +222,18 @@ export function stepSnake(state: SnakeGameState, direction: Direction, lang: Sup
     // acaba de comer, para que el tablero no se desbalancee.
     const eatenCategory = categoryOf(state.letterTiles[eatenIndex].letter);
     nextState = { ...nextState, letterTiles: replenishLetters(nextState, lang, oppositeCategory(eatenCategory)) };
+  }
+
+  if (wrapped) {
+    // Premio por cruzar: una ficha extra en el tablero, además de las que
+    // ya haya (no reemplaza el reparto normal de arriba).
+    const occupied = new Set<string>();
+    for (const seg of currentSegments(nextState)) occupied.add(posKey(seg));
+    for (const t of nextState.letterTiles) occupied.add(posKey(t));
+    const bonusTile = spawnLetterTile(lang, occupied);
+    if (bonusTile) {
+      nextState = { ...nextState, letterTiles: [...nextState.letterTiles, bonusTile] };
+    }
   }
 
   return { status: isEating ? "ate" : "moved", state: nextState };

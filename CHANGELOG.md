@@ -15,6 +15,10 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 - Letras: subir el máximo de letras en tablero de 6 a 15 (quedaban pocas para elegir), sigue mitad vocales mitad consonantes
 - Controles: si ya vas para un lado y apretás esa misma dirección de nuevo (tecla, botón o swipe), avanza un casillero de una en vez de esperar al próximo tick — insistir en la tecla ahora sirve para llegar más rápido a la letra que se busca
 - Home: el bloque de "Jugar" (demo + botón) usa el mismo box cuadrado 1:1 que Letris, así que queda con la misma altura. `SnakeBoard` ahora acepta `cols`/`rows` opcionales para poder mostrar una grilla más chica (8x7) en la demo, sin tocar el tablero real (12x16) del juego
+- Traspasar paredes: la cabeza ya no muere contra el borde, aparece por el lado opuesto (misma fila/columna). Ya solo se pierde por chocar contra el propio cuerpo. Cada cruce agrega una ficha de letra extra al tablero, como premio
+
+### Fixed
+- Game over: el botón "Jugar de nuevo" se veía en blanco un instante al cargar la pantalla (el `variant="contained"` de MUI pintaba el fondo con el rojo del tema antes de que el `sx` lo pisara a blanco)
 
 ### Added
 - Viborealo: primera versión. Viborita clásica (tablero 12x16) donde en vez de puntitos se comen letras que van apareciendo random (ponderadas por frecuencia para que sea viable formar palabras); cada letra comida se suma al cuerpo, en el orden en que se comió

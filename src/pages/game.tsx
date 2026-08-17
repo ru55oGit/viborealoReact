@@ -199,7 +199,7 @@ export default function Game() {
             <FoundWordsList title={t.wordsListTitle} emptyLabel={t.wordsListEmpty} words={foundWords} hideTitle />
           </Box>
 
-          <Button onClick={restartGame} variant="contained" size="large" sx={{
+          <Button onClick={restartGame} size="large" sx={{
             backgroundColor: "#fff", color: ACCENT, fontWeight: 800, fontSize: 18,
             py: 1.6, borderRadius: 999, textTransform: "none",
             boxShadow: "0 0 0 4px rgba(255,255,255,0.35), 0 10px 24px rgba(0,0,0,0.4)",
