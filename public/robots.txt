@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://letris.net/sitemap.xml
+Sitemap: https://viborealo.com/sitemap.xml
