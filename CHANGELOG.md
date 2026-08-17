@@ -7,6 +7,7 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 ## [Unreleased]
 ### Added
 - Home: reemplazar la preview estática por una demo animada (componente `SnakeDemo`) donde la cabeza se mueve sola, come S-O-L, gira y detecta la palabra, en loop — reusa el mismo `SnakeBoard` del juego real
+- Diccionario (ES): agregar "wifi" a `EXTRA_WORDS_ES` (no está en an-array-of-spanish-words)
 
 ### Changed
 - Game over: mover los botones "Jugar de nuevo"/"Volver al inicio" debajo del box de palabras encontradas, y sacar el título "Palabras formadas" afuera del box gris (mismo estilo que Letris)
