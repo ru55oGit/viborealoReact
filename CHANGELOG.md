@@ -22,6 +22,7 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 ### Fixed
 - Game over: el botón "Jugar de nuevo" se veía en blanco un instante al cargar la pantalla (el `variant="contained"` de MUI pintaba el fondo con el rojo del tema antes de que el `sx` lo pisara a blanco)
 - Traspasar paredes: la ficha extra que se sumaba al cruzar salía casi siempre vocal (se sorteaba del pool sin filtrar, pesado 3 a 1 a favor de las vocales). Ahora se sortea de la categoría menos representada en el tablero al momento del cruce
+- Detectar palabra: podía no encontrar una palabra ya formada, o al detectarla borrar una letra que no correspondía. El listener de teclado se re-suscribía solo cuando cambiaba `direction`/`phase`, pero `setDirection` se llama en cada tick con el mismo valor si la víbora sigue derecho, y React no re-renderiza en ese caso — así que el closure de "Detectar palabra" (y con él, el cuerpo que evaluaba) podía quedar viejo por varios ticks. Ahora el listener se suscribe una sola vez y siempre despacha a la versión más reciente de los handlers vía ref, y `handleDetectWord` lee `gameStateRef` en vez del estado del closure
 
 ### Added
 - Viborealo: primera versión. Viborita clásica (tablero 12x16) donde en vez de puntitos se comen letras que van apareciendo random (ponderadas por frecuencia para que sea viable formar palabras); cada letra comida se suma al cuerpo, en el orden en que se comió

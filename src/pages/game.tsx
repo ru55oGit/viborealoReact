@@ -126,7 +126,14 @@ export default function Game() {
 
   function handleDetectWord() {
     if (phase !== "playing" || flashIndices) return;
-    const match = detectWordInBody(gameState.letters, currentLanguage);
+    // Leer de gameStateRef (no del gameState del closure): esta función se
+    // llama también desde el listener de teclado, cuyo closure puede
+    // quedar viejo por varios ticks (ver comentario en el efecto de
+    // teclado más abajo). Si leyera gameState acá, podía evaluar la
+    // palabra contra un cuerpo desactualizado — de ahí el bug real donde
+    // "no encontraba" una palabra ya formada, o el borrado posterior caía
+    // en índices corridos y se llevaba puesta una letra que no era.
+    const match = detectWordInBody(gameStateRef.current.letters, currentLanguage);
     if (!match) {
       setErrorMsg(t.errorNoWordFound);
       scheduleErrorClear();
@@ -146,7 +153,9 @@ export default function Game() {
 
     if (clearTimeoutRef.current) clearTimeout(clearTimeoutRef.current);
     clearTimeoutRef.current = setTimeout(() => {
-      setGameState((prev) => removeWordFromState(prev, match));
+      const nextState = removeWordFromState(gameStateRef.current, match);
+      gameStateRef.current = nextState;
+      setGameState(nextState);
       setFlashIndices(null);
     }, CLEAR_DELAY_MS);
   }
@@ -165,22 +174,33 @@ export default function Game() {
     setGameState(createInitialState(currentLanguage));
   }
 
-  // Teclado físico (desktop) además de botonera y swipe.
+  // Teclado físico (desktop) además de botonera y swipe. El listener se
+  // registra una sola vez (sin depender de `direction`/`phase`): setDirection
+  // se llama en CADA tick, pero si el valor no cambió React no re-renderiza
+  // (bailout de useState), así que un efecto con esos deps podía quedarse
+  // sin re-suscribirse por varios ticks seguidos mientras la víbora seguía
+  // derecho — y con eso, el closure de handleDetectWord/handleDirectionInput
+  // quedaba viejo. Despachar siempre a través de refs actualizadas en cada
+  // render evita ese problema de raíz.
+  const handleDirectionInputRef = useRef(handleDirectionInput);
+  handleDirectionInputRef.current = handleDirectionInput;
+  const handleDetectWordRef = useRef(handleDetectWord);
+  handleDetectWordRef.current = handleDetectWord;
+
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "ArrowUp") handleDirectionInput("up");
-      else if (e.key === "ArrowDown") handleDirectionInput("down");
-      else if (e.key === "ArrowLeft") handleDirectionInput("left");
-      else if (e.key === "ArrowRight") handleDirectionInput("right");
+      if (e.key === "ArrowUp") handleDirectionInputRef.current("up");
+      else if (e.key === "ArrowDown") handleDirectionInputRef.current("down");
+      else if (e.key === "ArrowLeft") handleDirectionInputRef.current("left");
+      else if (e.key === "ArrowRight") handleDirectionInputRef.current("right");
       else if (e.key === " " || e.code === "Space") {
         e.preventDefault(); // la barra espaciadora scrollea la página por default
-        handleDetectWord();
+        handleDetectWordRef.current();
       }
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [direction, phase]);
+  }, []);
 
   const segments = currentSegments(gameState);
 
