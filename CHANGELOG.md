@@ -21,6 +21,7 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ### Fixed
 - Game over: el botón "Jugar de nuevo" se veía en blanco un instante al cargar la pantalla (el `variant="contained"` de MUI pintaba el fondo con el rojo del tema antes de que el `sx` lo pisara a blanco)
+- Traspasar paredes: la ficha extra que se sumaba al cruzar salía casi siempre vocal (se sorteaba del pool sin filtrar, pesado 3 a 1 a favor de las vocales). Ahora se sortea de la categoría menos representada en el tablero al momento del cruce
 
 ### Added
 - Viborealo: primera versión. Viborita clásica (tablero 12x16) donde en vez de puntitos se comen letras que van apareciendo random (ponderadas por frecuencia para que sea viable formar palabras); cada letra comida se suma al cuerpo, en el orden en que se comió

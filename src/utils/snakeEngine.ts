@@ -228,11 +228,16 @@ export function stepSnake(state: SnakeGameState, direction: Direction, lang: Sup
 
   if (wrapped) {
     // Premio por cruzar: una ficha extra en el tablero, además de las que
-    // ya haya (no reemplaza el reparto normal de arriba).
+    // ya haya (no reemplaza el reparto normal de arriba). Se sortea de la
+    // categoría menos representada en el tablero actual — si no, al no
+    // pasar ninguna categoría (pool sin filtrar), salía casi siempre vocal,
+    // porque el pool general está pesado 3 a 1 a favor de las vocales.
     const occupied = new Set<string>();
     for (const seg of currentSegments(nextState)) occupied.add(posKey(seg));
     for (const t of nextState.letterTiles) occupied.add(posKey(t));
-    const bonusTile = spawnLetterTile(lang, occupied);
+    const vowelCount = nextState.letterTiles.filter((t) => categoryOf(t.letter) === "vowel").length;
+    const bonusCategory: LetterCategory = vowelCount * 2 > nextState.letterTiles.length ? "consonant" : "vowel";
+    const bonusTile = spawnLetterTile(lang, occupied, bonusCategory);
     if (bonusTile) {
       nextState = { ...nextState, letterTiles: [...nextState.letterTiles, bonusTile] };
     }
