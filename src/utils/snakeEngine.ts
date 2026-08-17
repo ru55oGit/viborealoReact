@@ -67,14 +67,20 @@ const LETTER_WEIGHTS: Record<SupportedLanguage, Record<string, number>> = {
     P: 1, G: 1, F: 1, J: 1, H: 1, X: 1, Y: 1, Z: 1, K: 1, W: 1, Q: 1,
   },
   en: {
-    E: 13, T: 9, A: 8, O: 8, I: 7, N: 7, S: 6, H: 6, R: 6, D: 4,
-    L: 4, U: 3, C: 3, M: 2, W: 2, F: 2, G: 2, Y: 2, P: 2, B: 2,
-    V: 1, K: 1, J: 1, X: 1, Q: 1, Z: 1,
+    // Mismo criterio que en `es`: vocales bien reforzadas, y entre las
+    // consonantes, T/N/S/H/R son las más comunes; J/K/Q/V/X/Z (las clásicas
+    // "letras raras" de Scrabble en inglés) quedan al piso del pool.
+    A: 19, E: 30, I: 16, O: 18, U: 7,
+    T: 3, N: 3, S: 3, H: 3, R: 3, D: 2, L: 2, C: 1, M: 1, W: 1,
+    F: 1, G: 1, Y: 1, P: 1, B: 1, J: 1, K: 1, Q: 1, V: 1, X: 1, Z: 1,
   },
   pt: {
-    A: 13, E: 12, O: 10, S: 8, R: 6, I: 6, N: 5, D: 5, M: 5, U: 4,
-    T: 4, C: 4, L: 3, P: 3, V: 2, G: 2, H: 1, Q: 1, B: 1, F: 1,
-    Z: 1, J: 1, X: 1, Y: 1, K: 1, W: 1,
+    // Mismo criterio: vocales reforzadas 3 a 1 sobre consonantes; entre las
+    // consonantes, S/R/D/M/N/T/C son las más comunes; J/K/W/X/Y/Z (K/W/Y
+    // casi no existen en portugués salvo préstamos/nombres) al piso.
+    A: 27, E: 23, I: 11, O: 20, U: 9,
+    S: 3, R: 3, D: 2, M: 2, N: 2, T: 2, C: 2, L: 1, P: 1, V: 1,
+    G: 1, H: 1, Q: 1, B: 1, F: 1, J: 1, K: 1, W: 1, X: 1, Y: 1, Z: 1,
   },
 };
 
