@@ -11,6 +11,9 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 - SEO: comprado el dominio viborealo.com — agregar og:url y canonical (faltaban), corregir el `Sitemap:` de robots.txt (apuntaba a letris.net, copiado sin actualizar) y agregar sitemap.xml (faltaba)
 - Detectar palabra: si no hay match leyendo el cuerpo en orden cronológico, probar también leyéndolo al revés — el jugador arma la palabra mirando el cuerpo en pantalla, no necesariamente en el orden en que la fue comiendo
 
+### Fixed
+- Header: tocar el título (para volver a Home) seleccionaba el texto en mobile y disparaba el popup de "Buscar en Google" del navegador — agregar `userSelect: none`
+
 ### Changed
 - Letras (EN/PT): aplicar el mismo criterio que ya tenía ES — vocales bien reforzadas sobre consonantes, y entre las consonantes, un grupo de letras poco frecuentes (J/K/Q/V/X/Z en inglés, J/K/W/X/Y/Z en portugués) al piso del pool
 - Game over: mover los botones "Jugar de nuevo"/"Volver al inicio" debajo del box de palabras encontradas, y sacar el título "Palabras formadas" afuera del box gris (mismo estilo que Letris)
