@@ -107,9 +107,9 @@ export default function Game() {
   useEffect(() => {
     if (phase === "gameover" && !savedRecordRef.current) {
       savedRecordRef.current = true;
-      maybeSaveRecord(currentLanguage, score, foundWords.map((f) => f.word));
+      maybeSaveRecord(currentLanguage, score, foundWords.map((f) => f.word), level);
     }
-  }, [phase, currentLanguage, score, foundWords]);
+  }, [phase, currentLanguage, score, foundWords, level]);
 
   function handleDirectionInput(dir: Direction) {
     if (phase !== "playing") return;

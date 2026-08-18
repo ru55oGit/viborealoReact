@@ -90,7 +90,7 @@ export default function Home() {
 
         <Box sx={{ width: "100%", borderRadius: "24px", backgroundColor: CARD_BG, p: 2, boxShadow: "0 12px 24px rgba(0,0,0,0.18)" }}>
           <Box sx={{
-            width: "100%", aspectRatio: "1", borderRadius: "16px", backgroundColor: "#f3f3f3",
+            width: "100%", borderRadius: "16px", backgroundColor: "#f3f3f3",
             p: 1.25, mb: 2,
           }}>
             <SnakeDemo />
@@ -133,6 +133,11 @@ export default function Home() {
               {record.longestWord && (
                 <Typography sx={{ fontSize: 13, color: "#888" }}>
                   {t.recordLongestWordCaption(record.longestWord)}
+                </Typography>
+              )}
+              {record.maxLevel > 1 && (
+                <Typography sx={{ fontSize: 13, color: "#888" }}>
+                  {t.recordMaxLevelCaption(record.maxLevel)}
                 </Typography>
               )}
               {record.words.length > 0 && (

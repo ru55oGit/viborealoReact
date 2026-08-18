@@ -12,6 +12,10 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 - Detectar palabra: si no hay match leyendo el cuerpo en orden cronológico, probar también leyéndolo al revés — el jugador arma la palabra mirando el cuerpo en pantalla, no necesariamente en el orden en que la fue comiendo
 - Niveles (como en Letris): cada 5 palabras se sube de nivel (objetivo constante, a diferencia de Letris donde va creciendo). Lo que se complejiza es el tope de letras en tablero: nivel 1 arranca en 15, nivel 2 en 20, nivel 3 en 25, +5 por nivel. Cartel de "¡Nivel N!" al subir (pausa el juego un momento, como en Letris), indicador de objetivo en el header, y nivel alcanzado en la pantalla de game over
 - AdSense: agregar `ads.txt` y el componente `AdsenseScript` (mismo patrón que el resto de los juegos — se carga solo en Home/Privacidad, nunca en `/game`), ahora que se dio de alta el sitio en AdSense
+- Récord: agregar nivel máximo alcanzado (cuarto récord independiente, junto a puntaje/palabras/palabra más larga)
+
+### Fixed
+- Home: la demo (`SnakeDemo`) dejaba una franja gris vacía abajo — el box que la envuelve forzaba `aspectRatio: "1"` (cuadrado) pero la grilla interna es 8x7 (0.875), así que sobraba espacio. Sacar el aspectRatio forzado y dejar que el alto salga del contenido (mismo fix aplicado a Letris, que tenía el mismo problema)
 
 ### Fixed
 - Header: tocar el título (para volver a Home) seleccionaba el texto en mobile y disparaba el popup de "Buscar en Google" del navegador — agregar `userSelect: none`
