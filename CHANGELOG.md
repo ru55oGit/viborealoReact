@@ -7,6 +7,7 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 ## [Unreleased]
 ### Added
 - Home: reemplazar la preview estática por una demo animada (componente `SnakeDemo`) donde la cabeza se mueve sola, come S-O-L, gira y detecta la palabra, en loop — reusa el mismo `SnakeBoard` del juego real
+- Home: si se llega desde el hub "Boludeando" (`?from=boludeando`, ahora en www.boludeando.com), se muestra un header blanco real arriba del título (mismo estilo que el header del juego, ya no una cajita flotante que se pisaba con el título) con flecha para volver. Queda persistido en localStorage para siempre en ese dispositivo — si alguien comparte la URL directa sin pasar por el hub, no aparece
 - Diccionario (ES): agregar "wifi" y "kiwi" a `EXTRA_WORDS_ES` (no están en an-array-of-spanish-words)
 - SEO: comprado el dominio viborealo.com — agregar og:url y canonical (faltaban), corregir el `Sitemap:` de robots.txt (apuntaba a letris.net, copiado sin actualizar) y agregar sitemap.xml (faltaba)
 - Detectar palabra: si no hay match leyendo el cuerpo en orden cronológico, probar también leyéndolo al revés — el jugador arma la palabra mirando el cuerpo en pantalla, no necesariamente en el orden en que la fue comiendo
