@@ -9,6 +9,7 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import Layout from "../components/Layout";
+import HowToPlayCollapse from "../components/HowToPlayCollapse";
 import SnakeBoard from "../components/SnakeBoard";
 import FoundWordsList, { FoundWordEntry } from "../components/FoundWordsList";
 import { useLanguage } from "../i18n/LanguageContext";
@@ -379,6 +380,8 @@ export default function Game() {
           scoreLabel={t.scoreLabel}
           score={score}
         />
+
+        <HowToPlayCollapse title={t.howToPlayTitle} body={t.howToPlayBody} />
       </Box>
     </Layout>
   );
