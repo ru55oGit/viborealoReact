@@ -26,6 +26,8 @@ export interface Translation {
   whatIsBody: string;
   howToPlayTitle: string;
   howToPlayBody: string;
+  faqTitle: string;
+  faq: { q: string; a: string }[];
 
   // Game
   scoreLabel: string;
@@ -68,6 +70,15 @@ const es: Translation = {
   whatIsBody: "Viborealo es la viborita clásica, pero en vez de puntitos comés letras que van apareciendo en el tablero. Cada letra que comés se suma al cuerpo de la víbora. Cuando el cuerpo forma una palabra, apretás el botón de detectar y esa palabra desaparece del cuerpo (se achica) y sumás puntos.",
   howToPlayTitle: "¿Cómo jugar?",
   howToPlayBody: "Movete con los botones de abajo o deslizando el dedo sobre el tablero. Comé las letras para que se sumen al cuerpo de la víbora, en el orden en que las vas comiendo. Cuando creas que el cuerpo formó una palabra, apretá \"Detectar palabra\": si hay una palabra válida en el diccionario, se elimina del cuerpo (se achica) y sumás puntos — si hay más de una posible, se elige la más larga. Perdés si chocás contra vos misma o contra el borde del tablero.",
+  faqTitle: "Preguntas frecuentes",
+  faq: [
+    { q: "¿Viborealo es gratis?", a: "Sí, jugar a Viborealo es completamente gratis. La app se sostiene con publicidad, nunca vas a tener que pagar para jugar." },
+    { q: "¿Necesito crear una cuenta?", a: "No. Tu récord y tu progreso se guardan en este dispositivo automáticamente, no hace falta registrarse ni iniciar sesión." },
+    { q: "¿Cómo subo de nivel?", a: "Cada 5 palabras que detectás subís de nivel. Al subir, aparecen más letras a la vez en el tablero (empieza en 15 y suma 5 más por nivel), así que la partida se pone más exigente de a poco." },
+    { q: "¿Qué pasa si el cuerpo forma más de una palabra posible?", a: "Se detecta la más larga de todas las que sean válidas en el diccionario en ese momento." },
+    { q: "¿Cuándo termina la partida?", a: "Perdés si la víbora choca contra su propio cuerpo o contra el borde del tablero. Podés jugar de nuevo las veces que quieras." },
+    { q: "¿En qué idiomas puedo jugar?", a: "Viborealo está disponible en español, inglés y portugués. Podés cambiar el idioma desde el selector de la parte de abajo de esta pantalla." },
+  ],
 
   scoreLabel: "Puntos",
   lengthLabel: "Largo",
@@ -109,6 +120,15 @@ const en: Translation = {
   whatIsBody: "Viborealo is classic Snake, but instead of dots you eat letters that appear on the board. Every letter you eat gets added to the snake's body. When the body spells a word, press the detect button and that word disappears from the body (it shrinks) and you score points.",
   howToPlayTitle: "How to play?",
   howToPlayBody: "Move with the buttons below or by swiping on the board. Eat letters so they're added to the snake's body, in the order you eat them. When you think the body spells a word, press \"Detect word\": if there's a valid dictionary word, it's removed from the body (it shrinks) and you score points — if there's more than one possible word, the longest one is chosen. You lose if you crash into yourself or the edge of the board.",
+  faqTitle: "Frequently asked questions",
+  faq: [
+    { q: "Is Viborealo free?", a: "Yes, playing Viborealo is completely free. The app runs on ads, so you'll never have to pay to play." },
+    { q: "Do I need to create an account?", a: "No. Your record and progress are saved automatically on this device — no sign-up or login required." },
+    { q: "How do I level up?", a: "Every 5 words you detect levels you up. Each level adds more letters on the board at once (it starts at 15 and adds 5 more per level), so the game gets gradually more demanding." },
+    { q: "What happens if the body spells more than one possible word?", a: "The longest valid dictionary word is the one that gets detected." },
+    { q: "When does the game end?", a: "You lose if the snake crashes into its own body or into the edge of the board. You can start a new game as many times as you want." },
+    { q: "What languages can I play in?", a: "Viborealo is available in Spanish, English and Portuguese. You can switch languages from the selector at the bottom of this screen." },
+  ],
 
   scoreLabel: "Score",
   lengthLabel: "Length",
@@ -150,6 +170,15 @@ const pt: Translation = {
   whatIsBody: "Viborealo é a cobrinha clássica, mas em vez de pontinhos você come letras que aparecem no tabuleiro. Cada letra que você come se junta ao corpo da cobra. Quando o corpo forma uma palavra, aperte o botão de detectar e essa palavra desaparece do corpo (ele encolhe) e você ganha pontos.",
   howToPlayTitle: "Como jogar?",
   howToPlayBody: "Mova-se com os botões abaixo ou deslizando o dedo pelo tabuleiro. Coma as letras para que se juntem ao corpo da cobra, na ordem em que você as come. Quando achar que o corpo formou uma palavra, aperte \"Detectar palavra\": se houver uma palavra válida no dicionário, ela é removida do corpo (ele encolhe) e você ganha pontos — se houver mais de uma possível, a mais longa é escolhida. Você perde se colidir consigo mesma ou com a borda do tabuleiro.",
+  faqTitle: "Perguntas frequentes",
+  faq: [
+    { q: "O Viborealo é grátis?", a: "Sim, jogar Viborealo é totalmente grátis. O app se sustenta com publicidade, você nunca vai precisar pagar para jogar." },
+    { q: "Preciso criar uma conta?", a: "Não. Seu recorde e seu progresso são salvos automaticamente neste dispositivo, não precisa se cadastrar nem fazer login." },
+    { q: "Como eu subo de nível?", a: "A cada 5 palavras detectadas você sobe de nível. Cada nível adiciona mais letras ao mesmo tempo no tabuleiro (começa em 15 e soma 5 a mais por nível), então a partida vai ficando mais exigente pouco a pouco." },
+    { q: "O que acontece se o corpo formar mais de uma palavra possível?", a: "É detectada a mais longa entre todas as válidas no dicionário naquele momento." },
+    { q: "Quando a partida termina?", a: "Você perde se a cobra colidir com o próprio corpo ou com a borda do tabuleiro. Pode jogar de novo quantas vezes quiser." },
+    { q: "Em quais idiomas posso jogar?", a: "O Viborealo está disponível em espanhol, inglês e português. Você pode trocar o idioma no seletor na parte de baixo desta tela." },
+  ],
 
   scoreLabel: "Pontos",
   lengthLabel: "Tamanho",
