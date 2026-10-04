@@ -12,6 +12,7 @@ import { useLanguage } from "../i18n/LanguageContext";
 import { getRecord, ViborealoRecord } from "../utils/viborealoRecordState";
 import { getDaysSinceLastPlayed } from "../utils/lastPlayedState";
 import { markFromHub, cameFromHubBefore } from "../utils/hubOriginState";
+import HouseAdBanner from "../ads/HouseAdBanner";
 
 const ACCENT = "#e74c3c";
 const CARD_BG = "#eb6f62";
@@ -159,6 +160,8 @@ export default function Home() {
             <Typography sx={{ fontSize: 13, color: "#888" }}>{t.recordEmptyBody}</Typography>
           )}
         </Box>
+
+        <HouseAdBanner slot="viborealo-home-banner" gameSlug="viborealo" locale={currentLanguage} />
 
         <Box component="section" sx={{ backgroundColor: "rgba(0,0,0,0.18)", borderRadius: "24px", px: 2, py: 2.5 }}>
           <Typography variant="h5" sx={{ fontWeight: 800, color: "#fff", mb: 1 }}>{t.whatIsTitle}</Typography>
