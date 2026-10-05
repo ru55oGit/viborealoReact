@@ -22,6 +22,8 @@ export interface Translation {
   recordWordsCaption: (n: number) => string;
   recordLongestWordCaption: (word: string) => string;
   recordMaxLevelCaption: (level: number) => string;
+  removeAdsButton: string;
+  removeAdsButtonBuying: string;
   whatIsTitle: string;
   whatIsBody: string;
   howToPlayTitle: string;
@@ -66,6 +68,8 @@ const es: Translation = {
   recordWordsCaption: (n) => `Más palabras en una partida: ${n}`,
   recordLongestWordCaption: (word) => `Palabra más larga: ${word} (${word.length} letras)`,
   recordMaxLevelCaption: (level) => `Nivel máximo alcanzado: ${level}`,
+  removeAdsButton: "Sacar los anuncios",
+  removeAdsButtonBuying: "Redirigiendo a MercadoPago...",
   whatIsTitle: "¿Qué es Viborealo?",
   whatIsBody: "Viborealo es la viborita clásica, pero en vez de puntitos comés letras que van apareciendo en el tablero. Cada letra que comés se suma al cuerpo de la víbora. Cuando el cuerpo forma una palabra, apretás el botón de detectar y esa palabra desaparece del cuerpo (se achica) y sumás puntos.",
   howToPlayTitle: "¿Cómo jugar?",
@@ -116,6 +120,8 @@ const en: Translation = {
   recordWordsCaption: (n) => `Most words in one game: ${n}`,
   recordLongestWordCaption: (word) => `Longest word: ${word} (${word.length} letters)`,
   recordMaxLevelCaption: (level) => `Highest level reached: ${level}`,
+  removeAdsButton: "Remove ads",
+  removeAdsButtonBuying: "Redirecting to MercadoPago...",
   whatIsTitle: "What is Viborealo?",
   whatIsBody: "Viborealo is classic Snake, but instead of dots you eat letters that appear on the board. Every letter you eat gets added to the snake's body. When the body spells a word, press the detect button and that word disappears from the body (it shrinks) and you score points.",
   howToPlayTitle: "How to play?",
@@ -166,6 +172,8 @@ const pt: Translation = {
   recordWordsCaption: (n) => `Mais palavras em uma partida: ${n}`,
   recordLongestWordCaption: (word) => `Palavra mais longa: ${word} (${word.length} letras)`,
   recordMaxLevelCaption: (level) => `Nível máximo alcançado: ${level}`,
+  removeAdsButton: "Remover anúncios",
+  removeAdsButtonBuying: "Redirecionando para o MercadoPago...",
   whatIsTitle: "O que é o Viborealo?",
   whatIsBody: "Viborealo é a cobrinha clássica, mas em vez de pontinhos você come letras que aparecem no tabuleiro. Cada letra que você come se junta ao corpo da cobra. Quando o corpo forma uma palavra, aperte o botão de detectar e essa palavra desaparece do corpo (ele encolhe) e você ganha pontos.",
   howToPlayTitle: "Como jogar?",

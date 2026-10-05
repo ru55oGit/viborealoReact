@@ -13,6 +13,7 @@ import { getRecord, ViborealoRecord } from "../utils/viborealoRecordState";
 import { getDaysSinceLastPlayed } from "../utils/lastPlayedState";
 import { markFromHub, cameFromHubBefore } from "../utils/hubOriginState";
 import HouseAdBanner from "../ads/HouseAdBanner";
+import { isAdFree, purchaseAdFree, syncAdFreeAfterReturn } from "../ads/adFreeEntitlement";
 
 const ACCENT = "#e74c3c";
 const CARD_BG = "#eb6f62";
@@ -20,7 +21,7 @@ const HUB_URL = "https://www.boludeando.com/";
 
 export default function Home() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const fromHubParam = searchParams.get("from") === "boludeando";
   // Persistido en localStorage: una vez que se entra desde el hub, el
   // header de "volver" queda para siempre en este dispositivo, sin
@@ -31,6 +32,38 @@ export default function Home() {
   }, [fromHubParam]);
   const { t, currentLanguage } = useLanguage();
   const [record, setRecord] = useState<ViborealoRecord | null>(null);
+
+  const [adFree, setAdFree] = useState(false);
+  const [buyingAdFree, setBuyingAdFree] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get("adfree_return") === "1") {
+      syncAdFreeAfterReturn().then((active) => {
+        setAdFree(active);
+        setSearchParams(
+          (prev) => {
+            prev.delete("adfree_return");
+            return prev;
+          },
+          { replace: true },
+        );
+      });
+    } else {
+      isAdFree().then(setAdFree);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleRemoveAds = async () => {
+    setBuyingAdFree(true);
+    const returnUrl = `${window.location.origin}${window.location.pathname}?adfree_return=1`;
+    const checkoutUrl = await purchaseAdFree(returnUrl);
+    if (checkoutUrl) {
+      window.location.href = checkoutUrl;
+    } else {
+      setBuyingAdFree(false);
+    }
+  };
 
   useEffect(() => {
     setRecord(getRecord(currentLanguage));
@@ -161,7 +194,19 @@ export default function Home() {
           )}
         </Box>
 
-        <HouseAdBanner slot="viborealo-home-banner" gameSlug="viborealo" locale={currentLanguage} />
+        {!adFree && (
+          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
+            <HouseAdBanner slot="viborealo-home-banner" gameSlug="viborealo" locale={currentLanguage} />
+            <Button
+              size="small"
+              onClick={handleRemoveAds}
+              disabled={buyingAdFree}
+              sx={{ color: "rgba(255,255,255,0.7)", textTransform: "none", fontSize: 13 }}
+            >
+              {buyingAdFree ? t.removeAdsButtonBuying : t.removeAdsButton}
+            </Button>
+          </Box>
+        )}
 
         <Box component="section" sx={{ backgroundColor: "rgba(0,0,0,0.18)", borderRadius: "24px", px: 2, py: 2.5 }}>
           <Typography variant="h5" sx={{ fontWeight: 800, color: "#fff", mb: 1 }}>{t.whatIsTitle}</Typography>
