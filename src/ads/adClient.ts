@@ -1,19 +1,27 @@
-// Copiado de boludeando-ads/sdk/boludeando-ads-client/src/adClient.ts el 2026-10-04.
+// Copiado de boludeando-ads/sdk/boludeando-ads-client/src/adClient.ts el 2026-10-05.
 // Si cambia la API del backend, actualizar acá y en el resto de los juegos a mano.
 import type { AdCreative } from "./types";
 
 const API_BASE = "https://ads-api.boludeando.com/api";
 
+export interface NextAdResult {
+  ad: AdCreative | null;
+  // "ad_free" = el dispositivo pagó para sacarse los anuncios — a
+  // diferencia de "no_fill"/"slot_not_found", acá NO hay que mostrar
+  // ningún fallback, el jugador pagó justamente para no ver nada.
+  reason?: string;
+}
+
 export async function fetchNextAd(
   slot: string,
   locale: string,
-): Promise<AdCreative | null> {
-  const params = new URLSearchParams({ slot, locale });
+  sessionId: string,
+): Promise<NextAdResult> {
+  const params = new URLSearchParams({ slot, locale, session: sessionId });
   const res = await fetch(`${API_BASE}/ads/next?${params.toString()}`);
-  if (!res.ok) return null;
+  if (!res.ok) return { ad: null };
 
-  const data = (await res.json()) as { ad: AdCreative | null };
-  return data.ad;
+  return (await res.json()) as NextAdResult;
 }
 
 export async function reportImpression(
@@ -53,5 +61,23 @@ export async function reportClick(impressionId: string | null): Promise<void> {
     });
   } catch {
     // Igual que arriba: no bloquear la navegación del usuario por esto.
+  }
+}
+
+export async function reportReward(
+  rewardToken: string,
+  gameSlug: string,
+  sessionId: string,
+  rewardType: string,
+): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/events/reward`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ rewardToken, gameSlug, sessionId, rewardType }),
+    });
+    return res.ok;
+  } catch {
+    return false;
   }
 }
