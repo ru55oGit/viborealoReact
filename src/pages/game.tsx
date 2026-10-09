@@ -12,6 +12,7 @@ import Layout from "../components/Layout";
 import HowToPlayCollapse from "../components/HowToPlayCollapse";
 import SnakeBoard from "../components/SnakeBoard";
 import FoundWordsList, { FoundWordEntry } from "../components/FoundWordsList";
+import HouseAdBanner from "../ads/HouseAdBanner";
 import { useLanguage } from "../i18n/LanguageContext";
 import { recordLastPlayed } from "../utils/lastPlayedState";
 import { maybeSaveRecord } from "../utils/viborealoRecordState";
@@ -371,6 +372,10 @@ export default function Game() {
           <Button disabled={rightDisabled} onClick={() => handleDirectionInput("right")} sx={dpadButtonSx}>
             <ArrowForwardRoundedIcon sx={{ fontSize: 24 }} />
           </Button>
+        </Box>
+
+        <Box sx={{ mt: 2, mb: 2 }}>
+          <HouseAdBanner slot="viborealo-game-banner" gameSlug="viborealo" locale={currentLanguage} />
         </Box>
 
         <FoundWordsList
