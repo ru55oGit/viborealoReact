@@ -147,6 +147,13 @@ export default function Home() {
           </Box>
         </Box>
 
+        <HouseAdBanner
+          slot="viborealo-home-double-banner"
+          gameSlug="viborealo"
+          locale={currentLanguage}
+          format="banner_double"
+        />
+
         <Box sx={{ borderRadius: "16px", backgroundColor: "#fff", p: 2, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
           <Typography sx={{ fontSize: 28, fontWeight: 800, color: "#222", mb: 0.5 }}>
             {t.recordTitle}
@@ -196,7 +203,6 @@ export default function Home() {
 
         {!adFree && (
           <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
-            <HouseAdBanner slot="viborealo-home-banner" gameSlug="viborealo" locale={currentLanguage} />
             <Button
               size="small"
               onClick={handleRemoveAds}
