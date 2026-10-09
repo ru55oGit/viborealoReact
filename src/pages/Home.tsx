@@ -154,6 +154,19 @@ export default function Home() {
           format="banner_double"
         />
 
+        {!adFree && (
+          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
+            <Button
+              size="small"
+              onClick={handleRemoveAds}
+              disabled={buyingAdFree}
+              sx={{ color: "rgba(255,255,255,0.7)", textTransform: "none", fontSize: 13 }}
+            >
+              {buyingAdFree ? t.removeAdsButtonBuying : t.removeAdsButton}
+            </Button>
+          </Box>
+        )}
+
         <Box sx={{ borderRadius: "16px", backgroundColor: "#fff", p: 2, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
           <Typography sx={{ fontSize: 28, fontWeight: 800, color: "#222", mb: 0.5 }}>
             {t.recordTitle}
@@ -201,18 +214,12 @@ export default function Home() {
           )}
         </Box>
 
-        {!adFree && (
-          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
-            <Button
-              size="small"
-              onClick={handleRemoveAds}
-              disabled={buyingAdFree}
-              sx={{ color: "rgba(255,255,255,0.7)", textTransform: "none", fontSize: 13 }}
-            >
-              {buyingAdFree ? t.removeAdsButtonBuying : t.removeAdsButton}
-            </Button>
-          </Box>
-        )}
+        <HouseAdBanner
+          slot="viborealo-home-double-banner-2"
+          gameSlug="viborealo"
+          locale={currentLanguage}
+          format="banner_double"
+        />
 
         <Box component="section" sx={{ backgroundColor: "rgba(0,0,0,0.18)", borderRadius: "24px", px: 2, py: 2.5 }}>
           <Typography variant="h5" sx={{ fontWeight: 800, color: "#fff", mb: 1 }}>{t.whatIsTitle}</Typography>
