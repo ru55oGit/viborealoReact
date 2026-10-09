@@ -13,6 +13,7 @@ import { getRecord, ViborealoRecord } from "../utils/viborealoRecordState";
 import { getDaysSinceLastPlayed } from "../utils/lastPlayedState";
 import { markFromHub, cameFromHubBefore } from "../utils/hubOriginState";
 import HouseAdBanner from "../ads/HouseAdBanner";
+import AdSlotAvailableBanner from "../ads/AdSlotAvailableBanner";
 import { isAdFree, purchaseAdFree, syncAdFreeAfterReturn } from "../ads/adFreeEntitlement";
 
 const ACCENT = "#e74c3c";
@@ -244,6 +245,12 @@ export default function Home() {
             ))}
           </Box>
         </Box>
+
+        {/* Banner fijo "anunciá acá" — no es un ad_slot real, nunca se
+            reemplaza por una campaña comprada. Siempre hay un lugar visible
+            para que alguien descubra que puede anunciar, incluso si todos
+            los slots de verdad ya están vendidos (2026-10-09). */}
+        {!adFree && <AdSlotAvailableBanner weeklyPrice={1000} />}
       </Box>
 
       <LanguageSelector />
