@@ -3,7 +3,7 @@ import { isValidWord } from "../data/dictionaries";
 
 export const GRID_COLS = 12;
 export const GRID_ROWS = 16;
-export const BASE_MAX_LETTERS_ON_BOARD = 15;
+export const BASE_MAX_LETTERS_ON_BOARD = 20;
 export const BASE_TICK_MS = 650;
 export const MIN_TICK_MS = 325;
 const MAX_PATH_LENGTH = 2000; // más que de sobra: el largo máximo real está acotado por GRID_COLS*GRID_ROWS
@@ -12,7 +12,7 @@ const MAX_PATH_LENGTH = 2000; // más que de sobra: el largo máximo real está 
 // diferencia de Letris donde el objetivo por nivel va creciendo) se sube
 // de nivel. La dificultad no pasa por la velocidad acá, sino por el tope
 // de letras en tablero, que sube LETTERS_STEP_PER_LEVEL cada vez: nivel 1
-// arranca en 15, nivel 2 en 20, nivel 3 en 25, etc.
+// arranca en 20, nivel 2 en 25, nivel 3 en 30, etc.
 export const WORDS_PER_LEVEL = 5;
 export const LETTERS_STEP_PER_LEVEL = 5;
 
