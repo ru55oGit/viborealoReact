@@ -335,6 +335,16 @@ export function pointsForWord(word: string): number {
   return 10 + lengthBonus;
 }
 
+// Recompensa del rewarded ad en game over: la única forma de perder es
+// chocar contra el propio cuerpo (no hay muerte por pared, ver wrapPos),
+// así que "limpiar" el cuerpo —dejar solo la cabeza en su posición
+// actual, sin letras— saca al jugador del choque sin tocar letterTiles,
+// dirección, puntaje ni nivel. Sigue jugando la misma partida, no arranca
+// una nueva.
+export function clearSnakeBody(state: SnakeGameState): SnakeGameState {
+  return { ...state, path: [state.path[0]], letters: [] };
+}
+
 export function removeWordFromState(state: SnakeGameState, match: WordMatch): SnakeGameState {
   // Llegar a largo 0 acá es válido (la cabeza nunca depende de tener letras):
   // significa que la palabra detectada usaba todo el cuerpo, "cuerpo limpio".

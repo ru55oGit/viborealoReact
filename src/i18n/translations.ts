@@ -46,6 +46,11 @@ export interface Translation {
   gameOverBody: (score: number) => string;
   playAgainButton: string;
   backToHomeButton: string;
+  rewardedAdButton: string;
+  rewardedAdHint: string;
+  rewardedAdConfirmButton: string;
+  rewardedAdSkipButton: string;
+  rewardedAdWaitLabel: (seconds: number) => string;
 }
 
 const es: Translation = {
@@ -98,6 +103,11 @@ const es: Translation = {
   gameOverBody: (score) => `Terminaste con ${score} puntos.`,
   playAgainButton: "Jugar de nuevo",
   backToHomeButton: "Volver al inicio",
+  rewardedAdButton: "Ver un anuncio y seguir jugando",
+  rewardedAdHint: "Se limpia el cuerpo de la víbora y seguís la partida con el mismo puntaje.",
+  rewardedAdConfirmButton: "Reclamar recompensa",
+  rewardedAdSkipButton: "Cerrar",
+  rewardedAdWaitLabel: (seconds) => `Esperá ${seconds}s...`,
 };
 
 const en: Translation = {
@@ -150,6 +160,11 @@ const en: Translation = {
   gameOverBody: (score) => `You finished with ${score} points.`,
   playAgainButton: "Play again",
   backToHomeButton: "Back to home",
+  rewardedAdButton: "Watch an ad to keep playing",
+  rewardedAdHint: "The snake's body gets cleared and you keep playing with the same score.",
+  rewardedAdConfirmButton: "Claim reward",
+  rewardedAdSkipButton: "Close",
+  rewardedAdWaitLabel: (seconds) => `Wait ${seconds}s...`,
 };
 
 const pt: Translation = {
@@ -202,6 +217,11 @@ const pt: Translation = {
   gameOverBody: (score) => `Você terminou com ${score} pontos.`,
   playAgainButton: "Jogar de novo",
   backToHomeButton: "Voltar ao início",
+  rewardedAdButton: "Assista um anúncio e continue jogando",
+  rewardedAdHint: "O corpo da cobra é limpo e você continua a partida com a mesma pontuação.",
+  rewardedAdConfirmButton: "Resgatar recompensa",
+  rewardedAdSkipButton: "Fechar",
+  rewardedAdWaitLabel: (seconds) => `Espere ${seconds}s...`,
 };
 
 export const translations: Record<SupportedLanguage, Translation> = { es, en, pt };

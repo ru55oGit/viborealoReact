@@ -13,6 +13,8 @@ import HowToPlayCollapse from "../components/HowToPlayCollapse";
 import SnakeBoard from "../components/SnakeBoard";
 import FoundWordsList, { FoundWordEntry } from "../components/FoundWordsList";
 import HouseAdBanner from "../ads/HouseAdBanner";
+import { useRewardedAd } from "../ads/useRewardedAd";
+import RewardedAdModal from "../ads/RewardedAdModal";
 import { useLanguage } from "../i18n/LanguageContext";
 import { recordLastPlayed } from "../utils/lastPlayedState";
 import { maybeSaveRecord } from "../utils/viborealoRecordState";
@@ -26,6 +28,7 @@ import {
   detectWordInBody,
   pointsForWord,
   removeWordFromState,
+  clearSnakeBody,
   isOpposite,
   levelFromWordsFound,
   wordsIntoCurrentLevel,
@@ -218,6 +221,21 @@ export default function Game() {
     setGameState(createInitialState(currentLanguage, maxLettersForLevel(1)));
   }
 
+  // Recompensa del rewarded ad en game over: limpia el cuerpo (la única
+  // causa de choque, ver clearSnakeBody) y retoma la misma partida —
+  // mismo puntaje, nivel y palabras encontradas, no un restart. Resetea
+  // savedRecordRef para que, si el jugador supera su récord después de
+  // revivir, maybeSaveRecord lo guarde en el gameover real que venga.
+  function handleRevive() {
+    const next = clearSnakeBody(gameStateRef.current);
+    gameStateRef.current = next;
+    setGameState(next);
+    savedRecordRef.current = false;
+    setPhase("playing");
+  }
+
+  const rewardedAd = useRewardedAd("viborealo-revive-rewarded", "viborealo", currentLanguage, handleRevive, "clear_snake");
+
   // Teclado físico (desktop) además de botonera y swipe. El listener se
   // registra una sola vez (sin depender de `direction`/`phase`): setDirection
   // se llama en CADA tick, pero si el valor no cambió React no re-renderiza
@@ -268,6 +286,23 @@ export default function Game() {
             <FoundWordsList title={t.wordsListTitle} emptyLabel={t.wordsListEmpty} words={foundWords} hideTitle />
           </Box>
 
+          <Button
+            onClick={rewardedAd.requestAd}
+            disabled={!rewardedAd.canShowAd}
+            size="large"
+            sx={{
+              backgroundColor: "#f0b429", color: "#1a1a1a", fontWeight: 800, fontSize: 16,
+              py: 1.4, borderRadius: 999, textTransform: "none",
+              "&:hover": { backgroundColor: "#d99f1a" },
+              "&.Mui-disabled": { backgroundColor: "rgba(240,180,41,0.35)", color: "rgba(26,26,26,0.5)" },
+            }}
+          >
+            {rewardedAd.loadingAd ? "..." : t.rewardedAdButton}
+          </Button>
+          <Typography sx={{ color: "rgba(255,255,255,0.75)", fontSize: 12, textAlign: "center", mt: -1 }}>
+            {t.rewardedAdHint}
+          </Typography>
+
           <Button onClick={restartGame} size="large" sx={{
             backgroundColor: "#fff", color: ACCENT, fontWeight: 800, fontSize: 18,
             py: 1.6, borderRadius: 999, textTransform: "none",
@@ -279,6 +314,20 @@ export default function Game() {
             {t.backToHomeButton}
           </Button>
         </Box>
+
+        <RewardedAdModal
+          locale={currentLanguage}
+          open={rewardedAd.showingAd}
+          adCreative={rewardedAd.adCreative}
+          canConfirmReward={rewardedAd.canConfirmReward}
+          secondsUntilCanConfirm={rewardedAd.secondsUntilCanConfirm}
+          onConfirm={rewardedAd.handleAdWatched}
+          onSkip={rewardedAd.handleAdSkipped}
+          onImageClick={rewardedAd.handleImageClick}
+          confirmLabel={t.rewardedAdConfirmButton}
+          skipLabel={t.rewardedAdSkipButton}
+          waitLabel={t.rewardedAdWaitLabel}
+        />
       </Layout>
     );
   }
