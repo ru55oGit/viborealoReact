@@ -5,6 +5,48 @@ export const EXTRA_WORDS_ES: string[] = [
   "Imprentera", "Lutier", "Mercadólogo", "Mercadóloga", "Maquetador", "Maquetadora", "Nutriólogo",
   "Nutrióloga", "Naturópata", "Optometrista", "Plomera", "Soldadora", "Tanatoesteticista",
   "Tanatopractor", "Tanatopractora", "Tatuador", "Tatuadora", "Wifi", "Kiwi",
+  // Países, capitales y ciudades grandes (misma lista que Letris/Enganchalo,
+  // portada acá el 2026-10-14 — a esta copia le faltaba todo este bloque,
+  // así que "argentina"/"madrid"/etc. no se tomaban como válidas) — ojo:
+  // buildWordSet en dictionaries.ts descarta cualquier entrada con espacios
+  // (/^[A-Z]+$/), así que acá solo suman las que son una sola palabra; las
+  // demás (ej. "costa rica", "nueva york") quedan sin efecto pero no
+  // rompen nada.
+  "afganistán","albania","alemania","andorra","angola","argelia","argentina","armenia","australia",
+  "austria","azerbaiyán","bahamas","bangladés","barbados","bélgica","belice","benín","bielorrusia",
+  "bolivia","botsuana","brasil","brunéi","bulgaria","burundi","bután","camboya","camerún","canadá",
+  "catar","chad","chile","china","chipre","colombia","croacia","cuba","dinamarca","ecuador","egipto",
+  "eritrea","eslovaquia","eslovenia","españa","estonia","etiopía","filipinas","finlandia","fiyi",
+  "francia","gabón","gambia","georgia","ghana","grecia","guatemala","guinea","guyana","haití",
+  "honduras","hungría","india","indonesia","irak","irán","irlanda","islandia","israel","italia",
+  "jamaica","japón","jordania","kazajistán","kenia","kirguistán","kiribati","kosovo","kuwait","laos",
+  "lesoto","letonia","líbano","liberia","libia","liechtenstein","lituania","luxemburgo","macao",
+  "madagascar","malasia","malaui","maldivas","malí","malta","marruecos","mauricio","mauritania",
+  "méxico","micronesia","moldavia","mónaco","mongolia","montenegro","mozambique","namibia","nauru",
+  "nepal","nicaragua","níger","nigeria","niue","noruega","omán","pakistán","palaos","palestina",
+  "panamá","paraguay","perú","polonia","portugal","qatar","reunión","ruanda","rumania","rusia",
+  "samoa","senegal","serbia","seychelles","singapur","siria","somalia","sudáfrica","sudán","suecia",
+  "suiza","surinam","tailandia","taiwán","tanzania","togo","tonga","túnez","turquía","tuvalu",
+  "ucrania","uganda","uruguay","vanuatu","venezuela","vietnam","yemen","zambia","zimbabue",
+  "kabul","tirana","berlín","luanda","riad","argel","ereván","canberra","viena","bakú","nasáu",
+  "manama","daca","bridgetown","bruselas","minsk","sucre","sarajevo","gaborone","brasilia","sofía",
+  "praia","ottawa","doha","santiago","pekín","nicosia","bogotá","moroni","seúl","zagreb","copenhague",
+  "roseau","quito","madrid","washington","tallin","manila","helsinki","suva","parís","libreville",
+  "banjul","tiflis","acra","atenas","conakry","malabo","georgetown","tegucigalpa","budapest","yakarta",
+  "bagdad","teherán","dublín","reikiavik","majuro","jerusalén","roma","kingston","tokio","amán",
+  "astaná","nairobi","biskek","tarawa","pristina","vientián","maseru","riga","beirut","monrovia",
+  "trípoli","vaduz","vilna","luxemburgo","skopie","antananarivo","lilongüe","malé","bamako","rabat",
+  "nuakchot","palikir","chisináu","mónaco","podgorica","maputo","windhoek","yaren","katmandú",
+  "managua","niamey","abuya","oslo","wellington","mascate","islamabad","asunción","lima","varsovia",
+  "lisboa","londres","praga","kigali","bucarest","moscú","apia","dakar","belgrado","victoria",
+  "freetown","singapur","damasco","mogadiscio","colombo","pretoria","jartum","estocolmo","berna",
+  "paramaribo","bangkok","taipéi","dodoma","dusambé","dili","lomé","asjabad","ankara","funafuti",
+  "kiev","kampala","montevideo","taskent","caracas","hanói","saná","harare","ontario","chicago",
+  "toronto","vancouver","barcelona","múnich","milán","nápoles","frankfurt","hamburgo","sevilla",
+  "valencia","bilbao","dubái","bombay","bangalore","calcuta","estambul","osaka","kioto","alejandría",
+  "johannesburgo","medellín","guadalajara","monterrey","córdoba","rosario","mendoza","oporto",
+  "génova","turín","lyon","marsella","niza","ginebra","zúrich","edimburgo","mánchester","liverpool",
+  "houston","boston","seattle","dallas","atlanta","filadelfia","detroit","phoenix",
 ];
 
 // Países, capitales y ciudades grandes en inglés (misma lista que
@@ -50,4 +92,10 @@ export const EXTRA_WORDS_EN: string[] = [
   "porto","genoa","turin","lyon","marseille","nice","geneva","zurich","manchester","liverpool","miami",
   "houston","boston","seattle","dallas","atlanta","philadelphia","detroit","phoenix","birmingham",
   "glasgow","belfast","sydney","melbourne","brisbane","auckland","guangzhou","shenzhen",
+  // Faltaban en esta copia recortada respecto a la lista original de
+  // Enganchalo (2026-10-14): comoros/kyrgyzstan/netherlands (países) y
+  // belmopan/bissau/yamoussoukro/ngerulmud/asuncion/lima/bloemfontein
+  // (capitales).
+  "comoros","kyrgyzstan","netherlands","belmopan","bissau","yamoussoukro","ngerulmud","asuncion",
+  "lima","bloemfontein",
 ];
