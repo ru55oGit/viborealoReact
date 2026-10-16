@@ -16,6 +16,7 @@ import HouseAdBanner from "../ads/HouseAdBanner";
 import { useRewardedAd } from "../ads/useRewardedAd";
 import RewardedAdModal from "../ads/RewardedAdModal";
 import { useLanguage } from "../i18n/LanguageContext";
+import { track } from "../lib/analytics";
 import { recordLastPlayed } from "../utils/lastPlayedState";
 import { maybeSaveRecord } from "../utils/viborealoRecordState";
 import {
@@ -66,6 +67,9 @@ export default function Game() {
   const clearTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const levelUpTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const savedRecordRef = useRef(false);
+  // Marca de tiempo de la partida actual (se renueva en cada restart), para
+  // calcular duration_sec al llegar a game_over.
+  const gameStartedAtRef = useRef(Date.now());
   const langRef = useRef(currentLanguage);
   langRef.current = currentLanguage;
   // Igual que langRef: el loop del tick lee esto por ref para no depender
@@ -88,6 +92,7 @@ export default function Game() {
 
   useEffect(() => {
     recordLastPlayed();
+    track("game_start", { level: 1 });
   }, []);
 
   // Loop principal: avanza un paso cada tick, a una velocidad que aumenta
@@ -113,6 +118,10 @@ export default function Game() {
     if (phase === "gameover" && !savedRecordRef.current) {
       savedRecordRef.current = true;
       maybeSaveRecord(currentLanguage, score, foundWords.map((f) => f.word), level);
+      // "collision" es la única causa real de game over en este juego (la
+      // víbora se choca contra su propio cuerpo) — no hay abandono explícito.
+      const durationSec = Math.round((Date.now() - gameStartedAtRef.current) / 1000);
+      track("game_over", { level, score, duration_sec: durationSec, reason: "collision" });
     }
   }, [phase, currentLanguage, score, foundWords, level]);
 
@@ -194,6 +203,7 @@ export default function Game() {
       setFlashIndices(null);
 
       if (willLevelUp) {
+        track("level_start", { level: newLevel });
         setLevelUpNumber(newLevel);
         setPhase("levelup");
         if (levelUpTimeoutRef.current) clearTimeout(levelUpTimeoutRef.current);
@@ -219,6 +229,8 @@ export default function Game() {
     setLevelUpNumber(null);
     setPhase("playing");
     setGameState(createInitialState(currentLanguage, maxLettersForLevel(1)));
+    gameStartedAtRef.current = Date.now();
+    track("game_start", { level: 1 });
   }
 
   // Recompensa del rewarded ad en game over: limpia el cuerpo (la única
