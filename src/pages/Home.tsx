@@ -12,7 +12,6 @@ import { useLanguage } from "../i18n/LanguageContext";
 import { track } from "../lib/analytics";
 import { getRecord, ViborealoRecord } from "../utils/viborealoRecordState";
 import { getDaysSinceLastPlayed } from "../utils/lastPlayedState";
-import { markFromHub, cameFromHubBefore } from "../utils/hubOriginState";
 import HouseAdBanner from "../ads/HouseAdBanner";
 import HubAdPromoBanner from "../ads/HubAdPromoBanner";
 import ShareButtons from "../ads/ShareButtons";
@@ -31,14 +30,6 @@ function handleHubLinkClick() {
 export default function Home() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const fromHubParam = searchParams.get("from") === "boludeando";
-  // Persistido en localStorage: una vez que se entra desde el hub, el
-  // header de "volver" queda para siempre en este dispositivo, sin
-  // depender de que el link tenga el parámetro cada vez.
-  const [showHubHeader] = useState(() => fromHubParam || cameFromHubBefore());
-  useEffect(() => {
-    if (fromHubParam) markFromHub();
-  }, [fromHubParam]);
   const { t, currentLanguage } = useLanguage();
   const [record, setRecord] = useState<ViborealoRecord | null>(null);
 
@@ -95,43 +86,46 @@ export default function Home() {
   return (
     <Layout showFooter>
       <AdsenseScript />
-      {showHubHeader && (
+      {
         // Shell fijo a todo el ancho del viewport (sin estilo propio) que
         // centra con flexbox el header real de 480px adentro — más robusto
         // que left:50%+transform. boxSizing:border-box en el header es
         // necesario para que el px:2 (padding) no se sume por fuera del
         // width:480px (encontrado en emojinaloReact: sin esto el header
-        // termina ~32px más ancho que la columna de contenido).
-        <Box sx={{ position: "fixed", top: 0, left: 0, width: "100%", zIndex: 10, display: "flex", justifyContent: "center" }}>
-          <Box component="header" sx={{
-            display: "flex", alignItems: "center",
-            height: 80, px: 2,
-            boxSizing: "border-box",
-            borderBottom: `2px solid ${ACCENT}`,
-            background: "#fff",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-            width: { xs: "100%", md: "480px" }, position: "relative",
-          }}>
-            <Box component="a" href={HUB_URL} onClick={handleHubLinkClick} aria-label="Volver" sx={{ display: "flex", alignItems: "center", zIndex: 1 }}>
-              <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
-                <path d="M26 6L14 19L26 32" stroke={ACCENT} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </Box>
-            <Box
-              component="a"
-              href={HUB_URL}
-              onClick={handleHubLinkClick}
-              sx={{
-                position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)",
-                fontFamily: "Lobster, cursive", fontSize: 28, color: ACCENT, textDecoration: "none",
-              }}
-            >
-              Boludeando
-            </Box>
+        // termina ~32px más ancho que la columna de contenido). Siempre
+        // visible (no solo viniendo del hub): con los shares de resultado,
+        // alguien puede entrar directo a este juego sin haber pasado por
+        // boludeando.com antes, y necesita igual una forma de llegar ahí.
+      }
+      <Box sx={{ position: "fixed", top: 0, left: 0, width: "100%", zIndex: 10, display: "flex", justifyContent: "center" }}>
+        <Box component="header" sx={{
+          display: "flex", alignItems: "center",
+          height: 80, px: 2,
+          boxSizing: "border-box",
+          borderBottom: `2px solid ${ACCENT}`,
+          background: "#fff",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+          width: { xs: "100%", md: "480px" }, position: "relative",
+        }}>
+          <Box component="a" href={HUB_URL} onClick={handleHubLinkClick} aria-label="Volver" sx={{ display: "flex", alignItems: "center", zIndex: 1 }}>
+            <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+              <path d="M26 6L14 19L26 32" stroke={ACCENT} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </Box>
+          <Box
+            component="a"
+            href={HUB_URL}
+            onClick={handleHubLinkClick}
+            sx={{
+              position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)",
+              fontFamily: "Lobster, cursive", fontSize: 28, color: ACCENT, textDecoration: "none",
+            }}
+          >
+            Boludeando
           </Box>
         </Box>
-      )}
-      <Box sx={{ width: "100%", px: { xs: 1.5, md: 2 }, pt: showHubHeader ? "80px" : 0, pb: 2, display: "flex", flexDirection: "column", gap: 2 }}>
+      </Box>
+      <Box sx={{ width: "100%", px: { xs: 1.5, md: 2 }, pt: "80px", pb: 2, display: "flex", flexDirection: "column", gap: 2 }}>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
           <Typography variant="h2" sx={{
             color: "#fff", fontWeight: 700, letterSpacing: "1px",
