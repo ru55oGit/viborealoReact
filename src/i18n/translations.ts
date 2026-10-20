@@ -41,6 +41,7 @@ export interface Translation {
   wordsListTitle: string;
   wordsListEmpty: string;
   shareResultText: (level: number, score: number) => string;
+  sharePointsLabel: (score: number) => string;
   detectWordButton: string;
   errorNoWordFound: string;
   gameOverTitle: string;
@@ -99,6 +100,7 @@ const es: Translation = {
   wordsListTitle: "Palabras formadas",
   wordsListEmpty: "Comé letras y apretá \"Detectar palabra\"",
   shareResultText: (level, score) => `¡Jugué Viborealo! Llegué al nivel ${level} con ${score} puntos 🐍`,
+  sharePointsLabel: (score) => `${score} puntos`,
   detectWordButton: "Detectar palabra",
   errorNoWordFound: "No hay ninguna palabra válida en el cuerpo.",
   gameOverTitle: "¡Chocaste!",
@@ -157,6 +159,7 @@ const en: Translation = {
   wordsListTitle: "Words spelled",
   wordsListEmpty: "Eat letters and press \"Detect word\"",
   shareResultText: (level, score) => `I played Viborealo! Reached level ${level} with ${score} points 🐍`,
+  sharePointsLabel: (score) => `${score} points`,
   detectWordButton: "Detect word",
   errorNoWordFound: "There's no valid word in the body.",
   gameOverTitle: "You crashed!",
@@ -215,6 +218,7 @@ const pt: Translation = {
   wordsListTitle: "Palavras formadas",
   wordsListEmpty: "Coma letras e aperte \"Detectar palavra\"",
   shareResultText: (level, score) => `Joguei Viborealo! Cheguei ao nível ${level} com ${score} pontos 🐍`,
+  sharePointsLabel: (score) => `${score} pontos`,
   detectWordButton: "Detectar palavra",
   errorNoWordFound: "Não há nenhuma palavra válida no corpo.",
   gameOverTitle: "Você colidiu!",

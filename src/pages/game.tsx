@@ -286,7 +286,15 @@ export default function Game() {
     setSharingResult(true);
     track("share", { method });
     try {
-      const imageFile = await buildViborealoResultPngFile(foundWords, score, level, "viborealo-resultado.png");
+      const imageFile = await buildViborealoResultPngFile(
+        foundWords,
+        {
+          levelLabel: t.levelReachedLabel(level),
+          pointsLabel: t.sharePointsLabel(score),
+          wordsSectionLabel: `${t.wordsListTitle.toUpperCase()} (${foundWords.length})`,
+        },
+        "viborealo-resultado.png",
+      );
       const shareUrl = "https://www.viborealo.com";
       const shareData: ShareData = {
         title: "Viborealo",

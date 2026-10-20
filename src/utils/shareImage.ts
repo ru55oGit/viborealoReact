@@ -11,6 +11,14 @@ interface ViborealoShareWord {
   points: number;
 }
 
+// Textos ya formateados/traducidos por el caller (t.levelReachedLabel,
+// etc.) — esta función no sabe de idiomas, solo dibuja.
+export interface ViborealoShareLabels {
+  levelLabel: string; // ej "Nivel alcanzado: 4"
+  pointsLabel: string; // ej "180 puntos"
+  wordsSectionLabel: string; // ej "PALABRAS ENCONTRADAS (12)"
+}
+
 function roundRectPath(
   ctx: CanvasRenderingContext2D,
   x: number,
@@ -32,8 +40,7 @@ const ACCENT = "#e74c3c";
 
 export async function buildViborealoResultPngFile(
   words: ViborealoShareWord[],
-  score: number,
-  level: number,
+  labels: ViborealoShareLabels,
   filename: string,
 ): Promise<File | null> {
   const width = 560;
@@ -93,18 +100,18 @@ export async function buildViborealoResultPngFile(
   // Nivel alcanzado + puntos.
   ctx.fillStyle = "#222222";
   ctx.font = "bold 22px sans-serif";
-  ctx.fillText(`Nivel alcanzado: ${level}`, width / 2, 86);
+  ctx.fillText(labels.levelLabel, width / 2, 86);
 
   ctx.fillStyle = "#666666";
   ctx.font = "600 16px sans-serif";
-  ctx.fillText(`${score} puntos`, width / 2, 116);
+  ctx.fillText(labels.pointsLabel, width / 2, 116);
 
   // Etiqueta de la lista.
   ctx.fillStyle = "#888888";
   ctx.font = "bold 12px sans-serif";
   ctx.textAlign = "left";
   ctx.textBaseline = "alphabetic";
-  ctx.fillText(`PALABRAS ENCONTRADAS (${words.length})`, padding, 148);
+  ctx.fillText(labels.wordsSectionLabel, padding, 148);
 
   // Chips de palabras, en filas (igual estética que FoundWordsList).
   ctx.font = "bold 14px monospace";
