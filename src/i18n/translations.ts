@@ -44,6 +44,9 @@ export interface Translation {
   sharePointsLabel: (score: number) => string;
   shareRecordText: (score: number) => string;
   detectWordButton: string;
+  pauseButtonLabel: string;
+  resumeButtonLabel: string;
+  pausedOverlayTitle: string;
   errorNoWordFound: string;
   gameOverTitle: string;
   gameOverBody: (score: number) => string;
@@ -104,6 +107,9 @@ const es: Translation = {
   sharePointsLabel: (score) => `${score} puntos`,
   shareRecordText: (score) => `¡Mi récord en Viborealo es de ${score} puntos! ¿Podés superarlo? 🐍`,
   detectWordButton: "Detectar palabra",
+  pauseButtonLabel: "Pausar",
+  resumeButtonLabel: "Reanudar",
+  pausedOverlayTitle: "⏸ Pausado",
   errorNoWordFound: "No hay ninguna palabra válida en el cuerpo.",
   gameOverTitle: "¡Chocaste!",
   gameOverBody: (score) => `Terminaste con ${score} puntos.`,
@@ -164,6 +170,9 @@ const en: Translation = {
   sharePointsLabel: (score) => `${score} points`,
   shareRecordText: (score) => `My Viborealo record is ${score} points! Can you beat it? 🐍`,
   detectWordButton: "Detect word",
+  pauseButtonLabel: "Pause",
+  resumeButtonLabel: "Resume",
+  pausedOverlayTitle: "⏸ Paused",
   errorNoWordFound: "There's no valid word in the body.",
   gameOverTitle: "You crashed!",
   gameOverBody: (score) => `You finished with ${score} points.`,
@@ -224,6 +233,9 @@ const pt: Translation = {
   sharePointsLabel: (score) => `${score} pontos`,
   shareRecordText: (score) => `Meu recorde no Viborealo é de ${score} pontos! Consegue superar? 🐍`,
   detectWordButton: "Detectar palavra",
+  pauseButtonLabel: "Pausar",
+  resumeButtonLabel: "Retomar",
+  pausedOverlayTitle: "⏸ Pausado",
   errorNoWordFound: "Não há nenhuma palavra válida no corpo.",
   gameOverTitle: "Você colidiu!",
   gameOverBody: (score) => `Você terminou com ${score} pontos.`,

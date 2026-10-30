@@ -8,6 +8,8 @@ import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
+import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import Layout from "../components/Layout";
 import HowToPlayCollapse from "../components/HowToPlayCollapse";
 import SnakeBoard from "../components/SnakeBoard";
@@ -44,7 +46,7 @@ const FEEDBACK_DURATION_MS = 1300;
 const CLEAR_DELAY_MS = 260;
 const LEVEL_UP_POPUP_MS = 1800;
 
-type Phase = "playing" | "levelup" | "gameover";
+type Phase = "playing" | "paused" | "levelup" | "gameover";
 
 export default function Game() {
   const navigate = useNavigate();
@@ -216,6 +218,14 @@ export default function Game() {
         }, LEVEL_UP_POPUP_MS);
       }
     }, CLEAR_DELAY_MS);
+  }
+
+  function pauseGame() {
+    if (phase === "playing") setPhase("paused");
+  }
+
+  function resumeGame() {
+    if (phase === "paused") setPhase("playing");
   }
 
   function restartGame() {
@@ -476,20 +486,65 @@ export default function Game() {
               </Typography>
             </Box>
           )}
+
+          {phase === "paused" && (
+            <Box sx={{
+              position: "absolute", inset: 0, zIndex: 3,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              backgroundColor: "rgba(255,255,255,0.96)", textAlign: "center", px: 2,
+            }}>
+              <Typography sx={{ fontFamily: "Lobster, cursive", fontSize: 32, color: ACCENT }}>
+                {t.pausedOverlayTitle}
+              </Typography>
+            </Box>
+          )}
         </Box>
 
-        <Button
-          onClick={handleDetectWord}
-          startIcon={<SearchRoundedIcon />}
-          sx={{
-            backgroundColor: "#fff", color: ACCENT, fontWeight: 800,
-            borderRadius: 999, py: 1.1, fontSize: 15, textTransform: "none", mb: 1,
-            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-            "&:hover": { backgroundColor: "#f3f3f3" },
-          }}
-        >
-          {t.detectWordButton}
-        </Button>
+        <Box sx={{ display: "flex", alignItems: "center", gap: "6px", mb: 1 }}>
+          <Button
+            onClick={pauseGame}
+            disabled={phase !== "playing"}
+            aria-label={t.pauseButtonLabel}
+            sx={{
+              minWidth: 0, width: 44, height: 44, flexShrink: 0,
+              backgroundColor: "#fff", color: ACCENT, borderRadius: "50%",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+              "&:hover": { backgroundColor: "#f3f3f3" },
+              "&.Mui-disabled": { backgroundColor: "rgba(255,255,255,0.5)", color: "rgba(231,76,60,0.4)" },
+            }}
+          >
+            <PauseRoundedIcon sx={{ fontSize: 22 }} />
+          </Button>
+
+          <Button
+            onClick={handleDetectWord}
+            startIcon={<SearchRoundedIcon />}
+            sx={{
+              flex: 1,
+              backgroundColor: "#fff", color: ACCENT, fontWeight: 800,
+              borderRadius: 999, py: 1.1, fontSize: 15, textTransform: "none",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+              "&:hover": { backgroundColor: "#f3f3f3" },
+            }}
+          >
+            {t.detectWordButton}
+          </Button>
+
+          <Button
+            onClick={resumeGame}
+            disabled={phase !== "paused"}
+            aria-label={t.resumeButtonLabel}
+            sx={{
+              minWidth: 0, width: 44, height: 44, flexShrink: 0,
+              backgroundColor: "#fff", color: ACCENT, borderRadius: "50%",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+              "&:hover": { backgroundColor: "#f3f3f3" },
+              "&.Mui-disabled": { backgroundColor: "rgba(255,255,255,0.5)", color: "rgba(231,76,60,0.4)" },
+            }}
+          >
+            <PlayArrowRoundedIcon sx={{ fontSize: 22 }} />
+          </Button>
+        </Box>
 
         <Box sx={{ display: "flex", width: "100%", gap: "2px", mb: 2 }}>
           <Button disabled={leftDisabled} onClick={() => handleDirectionInput("left")} sx={dpadButtonSx}>
