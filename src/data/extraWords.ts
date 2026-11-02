@@ -4,7 +4,7 @@ export const EXTRA_WORDS_ES: string[] = [
   "Ambientalista", "Cerrajera", "Carretillera", "Fonoaudiólogo", "Fonoaudióloga", "Imprentero",
   "Imprentera", "Lutier", "Mercadólogo", "Mercadóloga", "Maquetador", "Maquetadora", "Nutriólogo",
   "Nutrióloga", "Naturópata", "Optometrista", "Plomera", "Soldadora", "Tanatoesteticista",
-  "Tanatopractor", "Tanatopractora", "Tatuador", "Tatuadora", "Wifi", "Kiwi",
+  "Tanatopractor", "Tanatopractora", "Tatuador", "Tatuadora", "Wifi", "Kiwi", "Web", "Wok",
   // Países, capitales y ciudades grandes (misma lista que Letris/Enganchalo,
   // portada acá el 2026-10-14 — a esta copia le faltaba todo este bloque,
   // así que "argentina"/"madrid"/etc. no se tomaban como válidas) — ojo:

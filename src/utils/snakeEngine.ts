@@ -82,9 +82,13 @@ const LETTER_WEIGHTS: Record<SupportedLanguage, Record<string, number>> = {
     // quedaron mal en un ajuste anterior, que las había dejado tan raras
     // como H/X/Y/Z/K/W/Q — reportado por el usuario). Ese grupo (las
     // realmente poco frecuentes en español) queda al piso del pool.
+    // F (reportado como escaso por el usuario, 2026-11-01) y W (necesaria
+    // para formar préstamos como "wifi"/"web"/"wok", agregados al
+    // diccionario en el mismo pedido) suben de 1 a 2 — su frecuencia real
+    // en español está más cerca de ese grupo que de H/X/Y/Z/K/Q.
     A: 22, E: 25, O: 18, I: 14, U: 11,
-    S: 3, T: 2, C: 2, B: 2, V: 2, R: 2, N: 2, D: 2, L: 2, M: 2,
-    P: 1, G: 1, F: 1, J: 1, H: 1, X: 1, Y: 1, Z: 1, K: 1, W: 1, Q: 1,
+    S: 3, T: 2, C: 2, B: 2, V: 2, R: 2, N: 2, D: 2, L: 2, M: 2, F: 2, W: 2,
+    P: 1, G: 1, J: 1, H: 1, X: 1, Y: 1, Z: 1, K: 1, Q: 1,
   },
   en: {
     // Mismo criterio que en `es`: vocales bien reforzadas, y entre las
