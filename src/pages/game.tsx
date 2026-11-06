@@ -21,6 +21,7 @@ import { useLanguage } from "../i18n/LanguageContext";
 import { track } from "../lib/analytics";
 import { recordLastPlayed } from "../utils/lastPlayedState";
 import { maybeSaveRecord } from "../utils/viborealoRecordState";
+import { loadInProgressGame, saveInProgressGame, clearInProgressGame } from "../utils/viborealoInProgressState";
 import { buildViborealoResultPngFile } from "../utils/shareImage";
 import {
   SnakeGameState,
@@ -52,11 +53,21 @@ export default function Game() {
   const navigate = useNavigate();
   const { t, currentLanguage } = useLanguage();
 
-  const [gameState, setGameState] = useState<SnakeGameState>(() => createInitialState(currentLanguage, maxLettersForLevel(1)));
-  const [direction, setDirection] = useState<Direction>("right");
-  const [phase, setPhase] = useState<Phase>("playing");
-  const [score, setScore] = useState(0);
-  const [foundWords, setFoundWords] = useState<FoundWordEntry[]>([]);
+  // Se lee una sola vez al montar (lazy initializer) — el resto del estado
+  // inicial se deriva de esto mismo, para que todos arranquen consistentes
+  // con la misma foto guardada (ver viborealoInProgressState.ts).
+  const [initialSnapshot] = useState(() => loadInProgressGame());
+
+  const [gameState, setGameState] = useState<SnakeGameState>(
+    () => initialSnapshot?.gameState ?? createInitialState(currentLanguage, maxLettersForLevel(1)),
+  );
+  const [direction, setDirection] = useState<Direction>(initialSnapshot?.direction ?? "right");
+  // Si había una partida guardada (jugando o ya en pausa), se restaura
+  // siempre en pausa — así la víbora no arranca a moverse sola apenas carga
+  // la página, y el jugador retoma cuando esté listo.
+  const [phase, setPhase] = useState<Phase>(initialSnapshot ? "paused" : "playing");
+  const [score, setScore] = useState(initialSnapshot?.score ?? 0);
+  const [foundWords, setFoundWords] = useState<FoundWordEntry[]>(initialSnapshot?.foundWords ?? []);
   const [flashIndices, setFlashIndices] = useState<Set<number> | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
   const [levelUpNumber, setLevelUpNumber] = useState<number | null>(null);
@@ -67,14 +78,15 @@ export default function Game() {
   const wordsInLevel = wordsIntoCurrentLevel(foundWords.length);
   const maxLetters = maxLettersForLevel(level);
 
-  const pendingDirectionRef = useRef<Direction>("right");
+  const pendingDirectionRef = useRef<Direction>(initialSnapshot?.direction ?? "right");
   const errorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const clearTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const levelUpTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const savedRecordRef = useRef(false);
   // Marca de tiempo de la partida actual (se renueva en cada restart), para
-  // calcular duration_sec al llegar a game_over.
-  const gameStartedAtRef = useRef(Date.now());
+  // calcular duration_sec al llegar a game_over. Si venimos de una partida
+  // restaurada, se conserva la marca original en vez de reiniciarla.
+  const gameStartedAtRef = useRef(initialSnapshot?.gameStartedAt ?? Date.now());
   const langRef = useRef(currentLanguage);
   langRef.current = currentLanguage;
   // Igual que langRef: el loop del tick lee esto por ref para no depender
@@ -97,8 +109,21 @@ export default function Game() {
 
   useEffect(() => {
     recordLastPlayed();
-    track("game_start", { level: 1 });
+    // Si veníamos de una partida restaurada, esto es un resume, no un
+    // arranque nuevo — no corresponde trackear game_start de nuevo.
+    if (!initialSnapshot) track("game_start", { level: 1 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Guarda una foto de la partida en curso después de cada cambio relevante
+  // (ver viborealoInProgressState.ts) — "levelup" no se persiste porque es
+  // un popup transitorio de 1.8s sobre "playing"; si el navegador mata la
+  // pestaña justo en ese instante, se retoma desde el último "playing"
+  // guardado un momento antes, que es indistinguible en la práctica.
+  useEffect(() => {
+    if (phase !== "playing" && phase !== "paused") return;
+    saveInProgressGame({ gameState, direction, phase, score, foundWords, gameStartedAt: gameStartedAtRef.current });
+  }, [gameState, direction, phase, score, foundWords]);
 
   // Loop principal: avanza un paso cada tick, a una velocidad que aumenta
   // levemente con el largo de la víbora.
@@ -122,6 +147,7 @@ export default function Game() {
   useEffect(() => {
     if (phase === "gameover" && !savedRecordRef.current) {
       savedRecordRef.current = true;
+      clearInProgressGame();
       maybeSaveRecord(currentLanguage, score, foundWords.map((f) => f.word), level);
       // "collision" es la única causa real de game over en este juego (la
       // víbora se choca contra su propio cuerpo) — no hay abandono explícito.
